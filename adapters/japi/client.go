@@ -1,4 +1,4 @@
-package api
+package japi
 
 import (
 	"context"
@@ -15,10 +15,11 @@ type Client struct {
 	token   string
 }
 
-func NewClient() *Client {
+func NewClient(baseUrl string, clientToken string) *Client {
 	client := &Client{
-		baseUrl: "jupiter-host:port",
+		baseUrl: baseUrl,
 		c:       http.Client{},
+		token:   clientToken,
 	}
 
 	return client
@@ -50,6 +51,7 @@ func (cl *Client) Get(ctx context.Context, path string) (*http.Response, error) 
 	}
 
 	cl.addAuth(req)
+	req.Header.Set("Content-Type", contentType)
 
 	return cl.c.Do(req)
 }

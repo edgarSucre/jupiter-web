@@ -1,0 +1,9 @@
+package layout
+
+templ index() {
+	@Base() {
+		<div hx-trigger="load" hx hx-get="/users" hx-swap="innerHTML">
+			Loading..
+		</div>
+	}
+}

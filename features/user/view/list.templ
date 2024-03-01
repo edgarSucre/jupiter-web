@@ -1,0 +1,11 @@
+package view
+
+import "github.com/edgarSucre/jw/features/user/model"
+
+templ List(list []model.User) {
+	<ul>
+		for _, user := range usersFromModel(list) {
+			<li id={ user.TemplID }>{ user.Name }</li>
+		}
+	</ul>
+}
