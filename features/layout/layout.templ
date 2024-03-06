@@ -1,9 +1,15 @@
 package layout
 
-templ index() {
+templ Index() {
 	@Base() {
-		<div hx-trigger="load" hx hx-get="/users" hx-swap="innerHTML">
-			Loading..
+		<div class="flex h-screen overflow-hidden">
+			@Navbar()
+			<div class="relative flex flex-1 flex-col overflow-y-auto overflow-x-hidden">
+				@Header()
+				<main>
+					{ children... }
+				</main>
+			</div>
 		</div>
 	}
 }

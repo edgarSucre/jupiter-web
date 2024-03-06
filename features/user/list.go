@@ -7,8 +7,7 @@ import (
 	"github.com/edgarSucre/jw/features/user/view"
 )
 
-// ListUsers shows the list of users
-func (h *Handler) ListUsers(ctx context.Context) templ.Component {
+func (h *Handler) List(ctx context.Context) templ.Component {
 	mUsers, err := h.useCase.List(ctx)
 	if err != nil {
 		return view.ListErr()

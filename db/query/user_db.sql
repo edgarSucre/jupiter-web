@@ -10,3 +10,8 @@ RETURNING *;
 SELECT *
 FROM users
 ORDER BY id;
+
+-- name: GetUserByUserName :one
+SELECT *
+FROM users
+WHERE username = ?;

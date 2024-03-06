@@ -31,6 +31,7 @@ type (
 		Name     string
 		UserName string
 		Admin    bool
+		Password string
 	}
 
 	CreateUserParams struct {

@@ -1,38 +1,35 @@
 package web
 
 import (
-	"net/http"
+	authm "github.com/edgarSucre/jw/features/auth/model"
 
-	"github.com/edgarSucre/jw/domain"
-	"github.com/edgarSucre/jw/features/login"
 	"github.com/labstack/echo/v4"
 )
 
-func setAuth(server *Server, authGroup *echo.Group) {
-	authGroup.GET("/login", func(c echo.Context) error {
-		return Render(c, http.StatusOK, login.Login())
-	})
+func (server *Server) authenticate(c echo.Context) error {
+	var params authm.LoginParams
 
-	authGroup.POST("/login", func(c echo.Context) error {
+	if err := c.Bind(&params); err != nil {
+		// TODO: handle binding err
 
-		// TODO: handle login - return the user
+		return c.NoContent(404)
+	}
 
-		session := domain.Session{
-			Name:  "Edgar",
-			Admin: true,
-		}
+	user, err := server.authHandler.Authenticate(c.Request().Context(), params)
 
-		c.SetCookie(createNewCookie(session))
+	if err != nil {
+		// TODO: handle error
+	}
 
-		return goToHome(c)
-	}, skipLogin)
+	server.sessionManager.new(c, user)
 
-	authGroup.POST("/logout", func(c echo.Context) error {
-		c.Set(sessionKey, nil)
-		c.SetCookie(createExpireCookie())
+	return goToHome(c)
+}
 
-		return c.Redirect(http.StatusSeeOther, "/auth/login")
-	})
+func (server *Server) logout(c echo.Context) error {
+	server.sessionManager.expire(c)
+
+	return goToLogin(c)
 }
 
 func skipLogin(next echo.HandlerFunc) echo.HandlerFunc {

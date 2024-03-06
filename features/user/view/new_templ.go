@@ -10,7 +10,9 @@ import "context"
 import "io"
 import "bytes"
 
-func New() templ.Component {
+import "github.com/edgarSucre/jw/features/layout"
+
+func NewUser() templ.Component {
 	return templ.ComponentFunc(func(ctx context.Context, templ_7745c5c3_W io.Writer) (templ_7745c5c3_Err error) {
 		templ_7745c5c3_Buffer, templ_7745c5c3_IsBuffer := templ_7745c5c3_W.(*bytes.Buffer)
 		if !templ_7745c5c3_IsBuffer {
@@ -23,7 +25,22 @@ func New() templ.Component {
 			templ_7745c5c3_Var1 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<div>Create form</div>")
+		templ_7745c5c3_Var2 := templ.ComponentFunc(func(ctx context.Context, templ_7745c5c3_W io.Writer) (templ_7745c5c3_Err error) {
+			templ_7745c5c3_Buffer, templ_7745c5c3_IsBuffer := templ_7745c5c3_W.(*bytes.Buffer)
+			if !templ_7745c5c3_IsBuffer {
+				templ_7745c5c3_Buffer = templ.GetBuffer()
+				defer templ.ReleaseBuffer(templ_7745c5c3_Buffer)
+			}
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<main class=\"flex justify-center items-center h-screen bg-indigo-600\"><form method=\"post\" action=\"/admin/users/create\" class=\"w-96 p-6 shadow-lg bg-white rounded-md\"><h1 class=\"text-3xl block text-center font-semibold\">Nuevo Usuario</h1><hr class=\"mt-3\"><div class=\"mt-3\"><label for=\"name\" class=\"block text-base mb-2\">Nombre</label> <input name=\"name\" type=\"text\" id=\"name\" placeholder=\"Nombre complete...\" class=\"border w-full text-base px-2 py-1 focus:outline-none focus:ring-0 focus:border-gray-600\"></div><div class=\"mt-3\"><label for=\"username\" class=\"block text-base mb-2\">Usuario</label> <input name=\"username\" type=\"text\" id=\"username\" placeholder=\"Usuario...\" class=\"border w-full text-base px-2 py-1 focus:outline-none focus:ring-0 focus:border-gray-600\"></div><div class=\"mt-3\"><label for=\"password\" class=\"block text-base mb-2\">Contraseña</label> <input name=\"password\" type=\"password\" id=\"password\" placeholder=\"Inserte Contraseña... \" class=\"border w-full text-base px-2 py-1 focus:outline-none focus:ring-0 focus:border-gray-600\"></div><div class=\"mt-3\"><label for=\"repeat_password\" class=\"block text-base mb-2\">Contraseña</label> <input name=\"repeat_password\" type=\"password\" id=\"repeat_password\" placeholder=\"Repetir Contraseña... \" class=\"border w-full text-base px-2 py-1 focus:outline-none focus:ring-0 focus:border-gray-600\"></div><div class=\"mt-5\"><button class=\"font-semibold border-2 border-indigo-700 bg-indigo-700 text-white py-1 w-full rounded-md hover:bg-transparent hover:text-indigo-700\" type=\"submit\">Crear Usuario</button></div></form></main>")
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+			if !templ_7745c5c3_IsBuffer {
+				_, templ_7745c5c3_Err = io.Copy(templ_7745c5c3_W, templ_7745c5c3_Buffer)
+			}
+			return templ_7745c5c3_Err
+		})
+		templ_7745c5c3_Err = layout.Base().Render(templ.WithChildren(ctx, templ_7745c5c3_Var2), templ_7745c5c3_Buffer)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}

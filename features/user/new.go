@@ -9,5 +9,5 @@ import (
 
 // New shows the new user form
 func (h *Handler) New(ctx context.Context) templ.Component {
-	return view.New()
+	return view.NewUser()
 }

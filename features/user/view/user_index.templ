@@ -1,0 +1,13 @@
+package view
+
+import "github.com/edgarSucre/jw/features/layout"
+
+templ Index() {
+	@layout.Index() {
+		<h1>Lista de Usuarios</h1>
+		<br/>
+		<div hx-trigger="load" hx hx-get="/admin/users/list" hx-swap="innerHTML">
+			Loading..
+		</div>
+	}
+}

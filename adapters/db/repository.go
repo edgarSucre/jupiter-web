@@ -38,3 +38,15 @@ func (repo *SqliteRepository) ListUsers(ctx context.Context) ([]domain.User, err
 
 	return UsersToDomain(users), nil
 }
+
+func (repo *SqliteRepository) GetUserByUsername(
+	ctx context.Context,
+	userName string,
+) (domain.User, error) {
+	user, err := repo.q.GetUserByUserName(ctx, userName)
+	if err != nil {
+		return domain.User{}, err
+	}
+
+	return user.forAuth(), nil
+}

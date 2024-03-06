@@ -11,6 +11,16 @@ func (u User) domain() domain.User {
 	}
 }
 
+func (u User) forAuth() domain.User {
+	return domain.User{
+		ID:       u.ID,
+		Name:     u.Name,
+		UserName: u.Username,
+		Admin:    u.Admin > 0,
+		Password: u.Password,
+	}
+}
+
 func UsersToDomain(users []User) []domain.User {
 	dUsers := make([]domain.User, len(users))
 	for i, user := range users {
