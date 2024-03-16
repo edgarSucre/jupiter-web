@@ -1,11 +1,32 @@
 package view
 
-import "github.com/edgarSucre/jw/features/user/model"
+import (
+	"github.com/edgarSucre/jw/features/user/model"
+)
 
 templ List(list []model.User) {
-	<ul>
-		for _, user := range usersFromModel(list) {
-			<li id={ user.TemplID }>{ user.Name }</li>
-		}
-	</ul>
+	for _, user := range usersFromModel(list) {
+		<div id={ user.TemplID } class="grid grid-cols-12 border-t border-[#EEEEEE] px-5 py-4 dark:border-strokedark lg:px-7.5 2xl:px-11">
+			<div class="col-span-3">
+				<p class="text-[#637381] dark:text-bodydark">{ user.Name }</p>
+			</div>
+			<div class="col-span-3">
+				<p class="text-[#637381] dark:text-bodydark">
+					Email del usuario pronto..
+				</p>
+			</div>
+			<div class="col-span-3">
+				<p class="text-[#637381] dark:text-bodydark">
+					if user.Admin {
+						Es Admin
+					} else {
+						No es Admin
+					}
+				</p>
+			</div>
+			<div class="col-span-3">
+				<p class="text-[#637381] dark:text-bodydark">Acciones pronto..</p>
+			</div>
+		</div>
+	}
 }

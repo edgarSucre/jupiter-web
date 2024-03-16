@@ -22,11 +22,15 @@ func NewHandler(uc useCase) *Handler {
 	}
 }
 
-func (h *Handler) Login(ctx context.Context) templ.Component {
-	return view.Login()
+func (h *Handler) Login(ctx context.Context, err error) templ.Component {
+	return view.Login(err)
 }
 
 func (h *Handler) Authenticate(ctx context.Context, params model.LoginParams) (model.User, error) {
+	if err := params.Validate(); err != nil {
+		return model.User{}, err
+	}
+
 	user, err := h.useCase.Login(ctx, params)
 
 	if err != nil {

@@ -23,6 +23,10 @@ func NewHandler(uc UseCase) *Handler {
 	}
 }
 
-func (h *Handler) Index(ctx context.Context) templ.Component {
-	return view.Index()
+func (h *Handler) IndexCmp(ctx context.Context) templ.Component {
+	return view.IndexCmp()
+}
+
+func (h *Handler) IndexFull(ctx context.Context) templ.Component {
+	return view.IndexFull()
 }

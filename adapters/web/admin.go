@@ -28,12 +28,12 @@ func adminMiddleware(next echo.HandlerFunc) echo.HandlerFunc {
 	return func(c echo.Context) error {
 		sessionValue := c.Get(sessionKey)
 		if sessionValue == nil {
-			return goToLogin(c)
+			return goNotFound(c)
 		}
 
 		session, ok := sessionValue.(domain.Session)
 		if !ok {
-			return goToLogin(c)
+			return goNotFound(c)
 		}
 
 		if !session.Admin {

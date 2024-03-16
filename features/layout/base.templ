@@ -1,5 +1,15 @@
 package layout
 
+import (
+	"fmt"
+	"time"
+)
+
+func q(f string) string {
+	t := time.Now().Unix()
+	return fmt.Sprintf("%s?q=%v", f, t)
+}
+
 templ Base() {
 	<!DOCTYPE html>
 	<html lang="en">
@@ -7,8 +17,8 @@ templ Base() {
 			<meta charset="UTF-8"/>
 			<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 			<script src="https://unpkg.com/htmx.org@1.9.10"></script>
-			<script src="/static/js/header.js"></script>
-			<link href="/static/css/output.css" rel="stylesheet"/>
+			<script src={ q("/static/js/header.js") }></script>
+			<link href={ q("/static/css/output.css") } rel="stylesheet"/>
 			<link href="/static/css/satoshi.css" rel="stylesheet"/>
 			<title>Jupyter Admin</title>
 		</head>

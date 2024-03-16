@@ -1,0 +1,14 @@
+# Ignore everything recursively
+*
+
+# Allow PHP, CSS, and JS files
+!**/*.templ
+!**/*.css
+!**/*.js
+
+# Also checks subdirectories with the rules above
+!*/
+
+# Specific patterns to ignore
+**/*.min.*
+node_modules/*
