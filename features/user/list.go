@@ -2,16 +2,14 @@ package user
 
 import (
 	"context"
-
-	"github.com/a-h/templ"
-	"github.com/edgarSucre/jw/features/user/view"
+	"fmt"
 )
 
-func (h *Handler) List(ctx context.Context) templ.Component {
-	mUsers, err := h.useCase.List(ctx)
+func (uc *UseCase) List(ctx context.Context) ([]User, error) {
+	dUsers, err := uc.repo.ListUsers(ctx)
 	if err != nil {
-		return view.ListErr()
+		return nil, fmt.Errorf("%w, repo.ListUsers", err)
 	}
 
-	return view.List(mUsers)
+	return usersFromDomain(dUsers), nil
 }

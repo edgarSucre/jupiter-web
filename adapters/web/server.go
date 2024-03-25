@@ -12,14 +12,14 @@ import (
 type Server struct {
 	userHandler    user.Handler
 	authHandler    auth.Handler
-	sessionManager sessionManager
+	sessionManager SessionManager
 }
 
 func NewServer(userHandler user.Handler, authHandler auth.Handler) *http.Server {
 	srv := &Server{
-		userHandler:    userHandler,
 		authHandler:    authHandler,
-		sessionManager: newSessionManager(),
+		userHandler:    userHandler,
+		sessionManager: NewSessionManager(),
 	}
 
 	e := echo.New()

@@ -3,14 +3,16 @@ package web
 import (
 	"net/http"
 	"os"
-	"strings"
 	"time"
 
 	"github.com/edgarSucre/jw/domain"
-	authm "github.com/edgarSucre/jw/features/auth/model"
+	"github.com/edgarSucre/jw/features/auth"
+
 	"github.com/gorilla/securecookie"
 	"github.com/labstack/echo/v4"
 )
+
+var skipSessionRoutes = []string{"/auth", "/static"}
 
 const (
 	cookieName  = "jupyter-web"
@@ -22,21 +24,21 @@ const (
 )
 
 type (
-	sessionManager struct {
+	SessionManager struct {
 		cookieStore *securecookie.SecureCookie
 	}
 )
 
-func newSessionManager() sessionManager {
+func NewSessionManager() SessionManager {
 	cookieHashKey := os.Getenv("COOKIE_HASH_KEY")
 	cookieBlockKey := os.Getenv("COOKIE_BLOCK_KEY")
 
-	return sessionManager{
+	return SessionManager{
 		cookieStore: securecookie.New([]byte(cookieHashKey), []byte(cookieBlockKey)),
 	}
 }
 
-func (sm sessionManager) new(c echo.Context, user authm.User) error {
+func (sm SessionManager) New(c echo.Context, user auth.User) error {
 	session := domain.Session{
 		Name:  user.Name,
 		Admin: user.Admin,
@@ -61,7 +63,7 @@ func (sm sessionManager) new(c echo.Context, user authm.User) error {
 	return nil
 }
 
-func (sm sessionManager) hidratate(c echo.Context) error {
+func (sm SessionManager) Hidratate(c echo.Context) error {
 	all := c.Request().Cookies()
 	_ = all
 	cookie, err := c.Cookie(cookieName)
@@ -81,7 +83,7 @@ func (sm sessionManager) hidratate(c echo.Context) error {
 	return nil
 }
 
-func (sm sessionManager) expire(c echo.Context) {
+func (sm SessionManager) Expire(c echo.Context) {
 	cookie := &http.Cookie{
 		Name:     cookieName,
 		Value:    "",
@@ -91,26 +93,4 @@ func (sm sessionManager) expire(c echo.Context) {
 
 	c.Set(sessionKey, nil)
 	c.SetCookie(cookie)
-}
-
-var skipSessionRoutes = []string{"/auth", "/static"}
-
-func sessionMiddleware(sm sessionManager) echo.MiddlewareFunc {
-	return func(next echo.HandlerFunc) echo.HandlerFunc {
-		return func(c echo.Context) error {
-			path := c.Path()
-
-			for _, route := range skipSessionRoutes {
-				if strings.HasPrefix(path, route) {
-					return next(c)
-				}
-			}
-
-			if err := sm.hidratate(c); err != nil {
-				return goToLogin(c)
-			}
-
-			return next(c)
-		}
-	}
 }

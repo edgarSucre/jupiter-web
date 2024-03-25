@@ -1,28 +1,29 @@
 package domain
 
-func NewValidationError(title string) *ValidationError {
-	return &ValidationError{
-		title: title,
+import "errors"
+
+type MyErr struct {
+	msg string
+}
+
+func (me MyErr) Error() string {
+	return me.msg
+}
+
+func NewErr(msg string) MyErr {
+	return MyErr{
+		msg: msg,
 	}
 }
 
-type ValidationError struct {
-	errors map[string]string
-	title  string
-}
+var (
+	ErrNotFound = NewErr("no se encotro entidad en la bd")
+)
 
-func (ve *ValidationError) Error() string {
-	if len(ve.errors) == 0 {
-		return ""
+func ViewErr(err error, defaultMsg string) map[string]string {
+	if errors.As(err, new(MyErr)) {
+		return map[string]string{"title": err.Error()}
 	}
 
-	return ve.title
-}
-
-func (ve *ValidationError) Append(field, msg string) {
-	ve.errors[field] = msg
-}
-
-func (ve *ValidationError) Get(field string) string {
-	return ve.errors[field]
+	return map[string]string{"title": defaultMsg}
 }

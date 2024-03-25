@@ -9,9 +9,7 @@ import (
 	"github.com/edgarSucre/jw/adapters/db"
 	"github.com/edgarSucre/jw/adapters/web"
 	"github.com/edgarSucre/jw/features/auth"
-	authUseCase "github.com/edgarSucre/jw/features/auth/ucase"
 	"github.com/edgarSucre/jw/features/user"
-	userUseCase "github.com/edgarSucre/jw/features/user/ucase"
 	"github.com/joho/godotenv"
 
 	_ "github.com/mattn/go-sqlite3"
@@ -34,11 +32,15 @@ func main() {
 
 	repository := db.NewSqliteRepository(dbConn)
 
-	authUC := authUseCase.New(repository)
-	userUC := userUseCase.New(repository)
+	sm := web.NewSessionManager()
+	navigator := web.Navigator{}
+	renderer := web.ViewRenderer{}
 
-	authHandler := auth.NewHandler(authUC)
-	userHandler := user.NewHandler(userUC)
+	authUC := auth.NewUseCase(repository)
+	userUC := user.NewUseCase(repository)
+
+	authHandler := auth.NewHandler(navigator, renderer, sm, authUC)
+	userHandler := user.NewHandler(renderer, userUC)
 
 	server := web.NewServer(*userHandler, *authHandler)
 	http.ListenAndServe(":8050", server.Handler)

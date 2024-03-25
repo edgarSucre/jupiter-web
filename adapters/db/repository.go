@@ -2,6 +2,8 @@ package db
 
 import (
 	"context"
+	"database/sql"
+	"errors"
 
 	"github.com/edgarSucre/jw/domain"
 )
@@ -45,7 +47,12 @@ func (repo *SqliteRepository) GetUserByUsername(
 ) (domain.User, error) {
 	user, err := repo.q.GetUserByUserName(ctx, userName)
 	if err != nil {
-		return domain.User{}, err
+		user := domain.User{}
+		if errors.Is(err, sql.ErrNoRows) {
+			return user, domain.ErrNotFound
+		}
+
+		return user, err
 	}
 
 	return user.forAuth(), nil

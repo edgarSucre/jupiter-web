@@ -1,11 +1,7 @@
 package view
 
-import (
-	"github.com/edgarSucre/jw/features/user/model"
-)
-
-templ List(list []model.User) {
-	for _, user := range usersFromModel(list) {
+templ List(list []User) {
+	for _, user := range list {
 		<div id={ user.TemplID } class="grid grid-cols-12 border-t border-[#EEEEEE] px-5 py-4 dark:border-strokedark lg:px-7.5 2xl:px-11">
 			<div class="col-span-3">
 				<p class="text-[#637381] dark:text-bodydark">{ user.Name }</p>

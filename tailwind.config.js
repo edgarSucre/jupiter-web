@@ -1,7 +1,7 @@
-const defaultTheme = require('tailwindcss/defaultTheme')
+const defaultTheme = require('tailwindcss/defaultTheme');
 
 module.exports = {
-  content: ["./features/**/*.templ"],
+  content: ['./features/**/*.templ', './features/**/*css.go'],
   darkMode: 'class',
   theme: {
     fontFamily: {
@@ -219,8 +219,7 @@ module.exports = {
         default: '0px 8px 13px -3px rgba(0, 0, 0, 0.07)',
         card: '0px 1px 3px rgba(0, 0, 0, 0.12)',
         'card-2': '0px 1px 2px rgba(0, 0, 0, 0.05)',
-        switcher:
-          '0px 2px 4px rgba(0, 0, 0, 0.2), inset 0px 2px 2px #FFFFFF, inset 0px -1px 1px rgba(0, 0, 0, 0.1)',
+        switcher: '0px 2px 4px rgba(0, 0, 0, 0.2), inset 0px 2px 2px #FFFFFF, inset 0px -1px 1px rgba(0, 0, 0, 0.1)',
         'switch-1': '0px 0px 5px rgba(0, 0, 0, 0.15)',
         1: '0px 1px 3px rgba(0, 0, 0, 0.08)',
         2: '0px 1px 4px rgba(0, 0, 0, 0.12)',
@@ -275,10 +274,8 @@ module.exports = {
       animation: {
         linspin: 'linspin 1568.2353ms linear infinite',
         easespin: 'easespin 5332ms cubic-bezier(0.4, 0, 0.2, 1) infinite both',
-        'left-spin':
-          'left-spin 1333ms cubic-bezier(0.4, 0, 0.2, 1) infinite both',
-        'right-spin':
-          'right-spin 1333ms cubic-bezier(0.4, 0, 0.2, 1) infinite both',
+        'left-spin': 'left-spin 1333ms cubic-bezier(0.4, 0, 0.2, 1) infinite both',
+        'right-spin': 'right-spin 1333ms cubic-bezier(0.4, 0, 0.2, 1) infinite both',
         'ping-once': 'ping 5s cubic-bezier(0, 0, 0.2, 1)',
         rotating: 'rotating 30s linear infinite',
         topbottom: 'topbottom 60s infinite alternate linear',
@@ -290,5 +287,4 @@ module.exports = {
     },
   },
   plugins: [],
-}
-
+};

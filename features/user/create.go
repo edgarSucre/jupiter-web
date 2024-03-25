@@ -4,14 +4,30 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/edgarSucre/jw/features/user/model"
+	"golang.org/x/crypto/bcrypt"
 )
 
-func (h *Handler) Create(ctx context.Context, params model.CreateParams) (model.User, error) {
-	user, err := h.useCase.Create(ctx, params)
+func (uc *UseCase) Create(ctx context.Context, params CreateParams) (User, error) {
+	user := new(User)
+
+	hp, err := hashPassword(params.Password)
 	if err != nil {
-		return model.User{}, fmt.Errorf("%w, usecase.Create(%+v)", err, params)
+		return *user, fmt.Errorf("%w, hashPassword", err)
 	}
 
-	return user, nil
+	params.Password = hp
+
+	du, err := uc.repo.CreateUser(ctx, params.Domain())
+	if err != nil {
+		return *user, fmt.Errorf("%w, repo.CreateUser", err)
+	}
+
+	user.FromDomain(du)
+
+	return *user, nil
+}
+
+func hashPassword(password string) (string, error) {
+	bytes, err := bcrypt.GenerateFromPassword([]byte(password), 14)
+	return string(bytes), err
 }

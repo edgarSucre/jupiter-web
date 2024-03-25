@@ -1,0 +1,64 @@
+package components
+
+templ Title(caption string) {
+	<div class="mb-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+		<h2 class="text-title-md2 font-bold text-black dark:text-white">
+			{ caption }
+		</h2>
+		<nav>
+			<ol class="flex items-center gap-2"></ol>
+		</nav>
+	</div>
+}
+
+type InputParams struct {
+	Err          string
+	Label        string
+	Name         string
+	Pass         bool
+	PlaceHolder  string
+	Required     bool
+	Value        string
+	WrapperClass string
+}
+
+func defaultWrapperClass(class string) string {
+	if class != "" {
+		return class
+	}
+
+	return "mb-4"
+}
+
+func defaultInputType(pass bool) string {
+	if pass {
+		return "password"
+	}
+
+	return "text"
+}
+
+templ TextInput(input InputParams) {
+	<div class={ defaultWrapperClass(input.WrapperClass) }>
+		<label for="name" class={ LabelBase }>
+			{ input.Label }
+			if input.Required {
+				<span class="text-meta-1">*</span>
+			}
+		</label>
+		<div class="relative">
+			<input
+				class={ TextInputBase, templ.KV("border-danger", input.Err != "") }
+				id={ input.Name }
+				name={ input.Name }
+				placeholder={ input.PlaceHolder }
+				type={ defaultInputType(input.Pass) }
+				value={ input.Value }
+			/>
+			<span class="text-danger font-medium">{ input.Err }</span>
+			<span class="absolute right-4 top-4">
+				{ children... }
+			</span>
+		</div>
+	</div>
+}

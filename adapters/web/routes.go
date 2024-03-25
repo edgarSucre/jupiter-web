@@ -1,15 +1,18 @@
 package web
 
 import (
-	"context"
 	"net/http"
 
 	"github.com/a-h/templ"
+	"github.com/edgarSucre/jw/features/components"
 	"github.com/edgarSucre/jw/features/layout"
 	"github.com/labstack/echo/v4"
 )
 
-const hxRequestHeaderName = "Hx-Request"
+const (
+	hxRequestHeaderName  = "Hx-Request"
+	hxRedirectHeaderName = "HX-Redirect"
+)
 
 func (server *Server) setRoutes(e *echo.Echo) {
 	// static assets
@@ -27,78 +30,96 @@ func (server *Server) setRoutes(e *echo.Echo) {
 	// Users
 	userHandler := server.userHandler
 	users := admin.Group("/users")
-	users.GET("", hxComponentHandler(userHandler.IndexFull, userHandler.IndexCmp))
-	users.GET("/list", componentHandler(userHandler.List))
-	users.GET("/new", componentHandler(userHandler.New))
-	users.POST("/create", server.userCreate)
+	users.GET("", userHandler.Index)
+	users.POST("", userHandler.Create, hxOrBustMiddleware)
+	users.GET("/list", userHandler.List, hxOrBustMiddleware)
+	users.GET("/new", userHandler.New)
 
 	// Auth
 	auth := e.Group("auth")
-	auth.GET("/login", server.login)
-	auth.POST("/login", server.authenticate)
-	auth.GET("/logout", server.logout)
+	auth.GET("/login", server.authHandler.Login)
+	auth.POST("/login", server.authHandler.Authenticate)
+	auth.GET("/logout", server.authHandler.Logout)
 
 	// Verifica la session, excepto en rutas especificas
 	e.Use(sessionMiddleware(server.sessionManager))
 
 	e.GET("/notfound", func(c echo.Context) error {
-		return c.String(200, "no se encontro lo que buscas")
+		view := components.Error(
+			"Lo sentimos, no se puede encontrar la pagina",
+			"La pagina que busca pudo haber sido movida, borrada o no existe",
+		)
+		return render(c, 200, view)
+	})
+
+	e.GET("*", func(c echo.Context) error {
+		return goNotFound(c)
 	})
 }
 
+type (
+	Navigator struct {
+	}
+
+	Redirector interface {
+		Redirect(code int, url string) error
+	}
+)
+
+func (nav Navigator) Home(c echo.Context) error {
+	return goToHome(c)
+}
+
+func (nav Navigator) Login(c echo.Context) error {
+	return goToLogin(c)
+}
+
+func (nav Navigator) NotFound(c echo.Context) error {
+	return goNotFound(c)
+}
+
 func goToLogin(c echo.Context) error {
+	if isHxRequest(c) {
+		c.Response().Header().Set(hxRedirectHeaderName, "/auth/login")
+		return c.NoContent(http.StatusOK)
+	}
+
 	return c.Redirect(http.StatusSeeOther, "/auth/login")
 }
 
 func goToHome(c echo.Context) error {
+	if isHxRequest(c) {
+		c.Response().Header().Set(hxRedirectHeaderName, "/")
+		return c.NoContent(http.StatusOK)
+	}
+
 	return c.Redirect(http.StatusSeeOther, "/")
 }
 
 func goNotFound(c echo.Context) error {
+	if isHxRequest(c) {
+		c.Response().Header().Set(hxRedirectHeaderName, "/notfound")
+		return c.NoContent(http.StatusOK)
+	}
+
 	return c.Redirect(http.StatusSeeOther, "/notfound")
 }
 
-func render(c echo.Context, statusCode int, t templ.Component) error {
-	c.Response().Writer.WriteHeader(statusCode)
+func isHxRequest(c echo.Context) bool {
+	val := c.Request().Header.Get(hxRequestHeaderName)
+
+	return val == "true"
+}
+
+type ViewRenderer struct{}
+
+func (ViewRenderer) Render(c echo.Context, code int, view templ.Component) error {
+	return render(c, code, view)
+}
+
+func render(c echo.Context, code int, view templ.Component) error {
+	c.Response().Writer.WriteHeader(code)
 	c.Response().Header().Set(echo.HeaderContentType, echo.MIMETextHTML)
 
-	return t.Render(c.Request().Context(), c.Response().Writer)
-}
-
-type templHandler func(context.Context) templ.Component
-
-func componentHandler(fn templHandler) echo.HandlerFunc {
-	return func(c echo.Context) error {
-		ctx := c.Request().Context()
-		return render(c, http.StatusOK, fn(ctx))
-	}
-}
-
-// hxComponentHandler render fullpage version of partial if not an hx-request
-func hxComponentHandler(
-	fullPageHandler templHandler,
-	partialHandler templHandler,
-) echo.HandlerFunc {
-	return func(c echo.Context) error {
-		ctx := c.Request().Context()
-
-		hxRequestHeaderValue := c.Request().Header.Get(hxRequestHeaderName)
-		if hxRequestHeaderValue == "true" {
-			return render(c, http.StatusOK, partialHandler(ctx))
-		}
-
-		return render(c, http.StatusOK, fullPageHandler(ctx))
-	}
-}
-
-// prevents non hx-requests to be handle
-func hxOrBustMiddleware(next echo.HandlerFunc) echo.HandlerFunc {
-	return func(c echo.Context) error {
-		hxRequestHeaderValue := c.Request().Header.Get(hxRequestHeaderName)
-		if hxRequestHeaderValue == "true" {
-			return next(c)
-		}
-
-		return goNotFound(c)
-	}
+	return view.Render(c.Request().Context(), c.Response().Writer)
 }

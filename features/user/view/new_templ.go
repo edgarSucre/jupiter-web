@@ -10,9 +10,12 @@ import "context"
 import "io"
 import "bytes"
 
-import "github.com/edgarSucre/jw/features/layout"
+import (
+	"github.com/edgarSucre/jw/features/components"
+	"github.com/edgarSucre/jw/features/layout"
+)
 
-func NewUser() templ.Component {
+func NewUser(user UserForm, errors map[string]string) templ.Component {
 	return templ.ComponentFunc(func(ctx context.Context, templ_7745c5c3_W io.Writer) (templ_7745c5c3_Err error) {
 		templ_7745c5c3_Buffer, templ_7745c5c3_IsBuffer := templ_7745c5c3_W.(*bytes.Buffer)
 		if !templ_7745c5c3_IsBuffer {
@@ -31,7 +34,15 @@ func NewUser() templ.Component {
 				templ_7745c5c3_Buffer = templ.GetBuffer()
 				defer templ.ReleaseBuffer(templ_7745c5c3_Buffer)
 			}
-			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<main class=\"flex justify-center items-center h-screen bg-indigo-600\"><form method=\"post\" action=\"/admin/users/create\" class=\"w-96 p-6 shadow-lg bg-white rounded-md\"><h1 class=\"text-3xl block text-center font-semibold\">Nuevo Usuario</h1><hr class=\"mt-3\"><div class=\"mt-3\"><label for=\"name\" class=\"block text-base mb-2\">Nombre</label> <input name=\"name\" type=\"text\" id=\"name\" placeholder=\"Nombre complete...\" class=\"border w-full text-base px-2 py-1 focus:outline-none focus:ring-0 focus:border-gray-600\"></div><div class=\"mt-3\"><label for=\"username\" class=\"block text-base mb-2\">Usuario</label> <input name=\"username\" type=\"text\" id=\"username\" placeholder=\"Usuario...\" class=\"border w-full text-base px-2 py-1 focus:outline-none focus:ring-0 focus:border-gray-600\"></div><div class=\"mt-3\"><label for=\"password\" class=\"block text-base mb-2\">Contraseña</label> <input name=\"password\" type=\"password\" id=\"password\" placeholder=\"Inserte Contraseña... \" class=\"border w-full text-base px-2 py-1 focus:outline-none focus:ring-0 focus:border-gray-600\"></div><div class=\"mt-3\"><label for=\"repeat_password\" class=\"block text-base mb-2\">Contraseña</label> <input name=\"repeat_password\" type=\"password\" id=\"repeat_password\" placeholder=\"Repetir Contraseña... \" class=\"border w-full text-base px-2 py-1 focus:outline-none focus:ring-0 focus:border-gray-600\"></div><div class=\"mt-5\"><button class=\"font-semibold border-2 border-indigo-700 bg-indigo-700 text-white py-1 w-full rounded-md hover:bg-transparent hover:text-indigo-700\" type=\"submit\">Crear Usuario</button></div></form></main>")
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<div class=\"flex flex-col gap-5 md:gap-7 2xl:gap-10\"><div class=\"rounded-[10px] max-w-full overflow-x-auto pb-3 flex justify-center\">")
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+			templ_7745c5c3_Err = NewUserForm(user, errors).Render(ctx, templ_7745c5c3_Buffer)
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</div></div>")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
@@ -40,7 +51,111 @@ func NewUser() templ.Component {
 			}
 			return templ_7745c5c3_Err
 		})
-		templ_7745c5c3_Err = layout.Base().Render(templ.WithChildren(ctx, templ_7745c5c3_Var2), templ_7745c5c3_Buffer)
+		templ_7745c5c3_Err = layout.Index().Render(templ.WithChildren(ctx, templ_7745c5c3_Var2), templ_7745c5c3_Buffer)
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
+		if !templ_7745c5c3_IsBuffer {
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteTo(templ_7745c5c3_W)
+		}
+		return templ_7745c5c3_Err
+	})
+}
+
+func NewUserForm(user UserForm, errors map[string]string) templ.Component {
+	return templ.ComponentFunc(func(ctx context.Context, templ_7745c5c3_W io.Writer) (templ_7745c5c3_Err error) {
+		templ_7745c5c3_Buffer, templ_7745c5c3_IsBuffer := templ_7745c5c3_W.(*bytes.Buffer)
+		if !templ_7745c5c3_IsBuffer {
+			templ_7745c5c3_Buffer = templ.GetBuffer()
+			defer templ.ReleaseBuffer(templ_7745c5c3_Buffer)
+		}
+		ctx = templ.InitializeContext(ctx)
+		templ_7745c5c3_Var3 := templ.GetChildren(ctx)
+		if templ_7745c5c3_Var3 == nil {
+			templ_7745c5c3_Var3 = templ.NopComponent
+		}
+		ctx = templ.ClearChildren(ctx)
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<form class=\"bg-white dark:bg-boxdark p-6 shadow-lg w-1/2\"><h1 class=\"text-3xl block text-center font-semibold text-graydark dark:text-gray-2\">Nuevo Usuario</h1><span class=\"inline-flex mt-2 text-lg text-danger font-medium\">")
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
+		var templ_7745c5c3_Var4 string
+		templ_7745c5c3_Var4, templ_7745c5c3_Err = templ.JoinStringErrs(errors["title"])
+		if templ_7745c5c3_Err != nil {
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `features/user/view/new.templ`, Line: 20, Col: 82}
+		}
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var4))
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</span>")
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
+		templ_7745c5c3_Err = components.TextInput(components.InputParams{
+			Err:         errors["name"],
+			Label:       "Nombre",
+			Name:        "name",
+			PlaceHolder: "Nombre completo...",
+			Required:    true,
+			Value:       user.Name,
+		}).Render(ctx, templ_7745c5c3_Buffer)
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
+		templ_7745c5c3_Err = components.TextInput(components.InputParams{
+			Err:         errors["username"],
+			Label:       "Usuario",
+			Name:        "username",
+			PlaceHolder: "Usuario...",
+			Required:    true,
+			Value:       user.UserName,
+		}).Render(ctx, templ_7745c5c3_Buffer)
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
+		templ_7745c5c3_Err = components.TextInput(components.InputParams{
+			Err:         errors["password"],
+			Label:       "Contraseña",
+			Name:        "password",
+			Pass:        true,
+			PlaceHolder: "Inserte Contraseña...",
+			Required:    true,
+			Value:       user.Password,
+		}).Render(ctx, templ_7745c5c3_Buffer)
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
+		templ_7745c5c3_Err = components.TextInput(components.InputParams{
+			Err:         errors["repeat_password"],
+			Label:       "Confirmar Contraseña",
+			Name:        "repeat_password",
+			Pass:        true,
+			PlaceHolder: "Repetir Contraseña...",
+			Required:    true,
+			Value:       user.RepeatPassword,
+		}).Render(ctx, templ_7745c5c3_Buffer)
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<div class=\"b-5\">")
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
+		var templ_7745c5c3_Var5 = []any{components.ButtonBase}
+		templ_7745c5c3_Err = templ.RenderCSSItems(ctx, templ_7745c5c3_Buffer, templ_7745c5c3_Var5...)
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<button hx-post=\"/admin/users\" hx-target=\"closest form\" hx-swap=\"outerHTML\" class=\"")
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ.CSSClasses(templ_7745c5c3_Var5).String()))
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("\">Crear Usuario</button></div></form>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
