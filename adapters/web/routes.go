@@ -1,6 +1,7 @@
 package web
 
 import (
+	"encoding/json"
 	"net/http"
 
 	"github.com/a-h/templ"
@@ -10,6 +11,7 @@ import (
 )
 
 const (
+	hxLocationHeaderName = "HX-Location"
 	hxRequestHeaderName  = "Hx-Request"
 	hxRedirectHeaderName = "HX-Redirect"
 )
@@ -17,10 +19,11 @@ const (
 func (server *Server) setRoutes(e *echo.Echo) {
 	// static assets
 	e.Static("/static", "static")
+	e.File("/favicon.ico", "static/images/favicon.ico")
 
 	// dashboard
 	e.GET("/", func(c echo.Context) error {
-		return render(c, http.StatusOK, layout.Main())
+		return render(c, http.StatusOK, layout.Index())
 	})
 
 	// solo admin users
@@ -45,11 +48,14 @@ func (server *Server) setRoutes(e *echo.Echo) {
 	e.Use(sessionMiddleware(server.sessionManager))
 
 	e.GET("/notfound", func(c echo.Context) error {
-		view := components.Error(
-			"Lo sentimos, no se puede encontrar la pagina",
-			"La pagina que busca pudo haber sido movida, borrada o no existe",
-		)
-		return render(c, 200, view)
+		title := "Lo sentimos, no se puede encontrar la pagina"
+		msg := "La pagina que busca pudo haber sido movida, borrada o no existe"
+
+		if isHxRequest(c) {
+			return render(c, 200, components.Error(title, msg))
+		}
+
+		return render(c, 200, components.ErrorReload(title, msg))
 	})
 
 	e.GET("*", func(c echo.Context) error {
@@ -98,8 +104,10 @@ func goToHome(c echo.Context) error {
 
 func goNotFound(c echo.Context) error {
 	if isHxRequest(c) {
-		c.Response().Header().Set(hxRedirectHeaderName, "/notfound")
-		return c.NoContent(http.StatusOK)
+		location := locationString(Location{Path: "/notfound", Target: "#mainSection"})
+		c.Response().Header().Set(hxLocationHeaderName, location)
+
+		return c.NoContent(http.StatusNotFound)
 	}
 
 	return c.Redirect(http.StatusSeeOther, "/notfound")
@@ -122,4 +130,14 @@ func render(c echo.Context, code int, view templ.Component) error {
 	c.Response().Header().Set(echo.HeaderContentType, echo.MIMETextHTML)
 
 	return view.Render(c.Request().Context(), c.Response().Writer)
+}
+
+type Location struct {
+	Path   string `json:"path"`
+	Target string `json:"target"`
+}
+
+func locationString(l Location) string {
+	ed, _ := json.Marshal(l)
+	return string(ed)
 }

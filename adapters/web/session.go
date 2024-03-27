@@ -12,7 +12,7 @@ import (
 	"github.com/labstack/echo/v4"
 )
 
-var skipSessionRoutes = []string{"/auth", "/static"}
+var skipSessionRoutes = []string{"/auth", "/static", "/favicon.ico"}
 
 const (
 	cookieName  = "jupyter-web"

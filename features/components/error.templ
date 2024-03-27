@@ -5,39 +5,43 @@ import (
 )
 
 templ Error(title, message string) {
-	@layout.Index() {
-		<div class="rounded-sm border border-stroke bg-white px-5 py-10 shadow-default dark:border-strokedark dark:bg-boxdark sm:py-20">
-			<div class="flex flex-col items-center">
-				<img
-					src="/static/images/illustration/illustration-01.svg"
-					alt="illustration"
-				/>
-				<div class="mt-7.5 text-center">
-					<h2
-						class="mb-3 text-2xl font-bold text-black dark:text-white"
-					>
-						if title != "" {
-							{ title }
-						} else {
-							"Ups! algo salio mal" 
-						}
-					</h2>
-					<p class="font-medium">
-						if message != "" {
-							{ message }
-						} else {
-							"No se pudo procesar esta petición, intentelo mas tarde" 
-						}
-					</p>
-					<a
-						hx-on:click="history.back()"
-						class="mt-7.5 inline-flex items-center gap-2 cursor-pointer rounded-md bg-primary px-6 py-3 font-medium text-white hover:bg-opacity-90"
-					>
-						@ArrowLeft()
-						<span>Regresar</span>
-					</a>
-				</div>
+	<div class="rounded-sm border border-stroke bg-white px-5 py-10 shadow-default dark:border-strokedark dark:bg-boxdark sm:py-20">
+		<div class="flex flex-col items-center">
+			<img
+				src="/static/images/illustration/illustration-01.svg"
+				alt="illustration"
+			/>
+			<div class="mt-7.5 text-center">
+				<h2
+					class="mb-3 text-2xl font-bold text-black dark:text-white"
+				>
+					if title != "" {
+						{ title }
+					} else {
+						"Ups! algo salio mal" 
+					}
+				</h2>
+				<p class="font-medium">
+					if message != "" {
+						{ message }
+					} else {
+						"No se pudo procesar esta petición, intentelo mas tarde" 
+					}
+				</p>
+				<a
+					hx-on:click="history.back()"
+					class="mt-7.5 inline-flex items-center gap-2 cursor-pointer rounded-md bg-primary px-6 py-3 font-medium text-white hover:bg-opacity-90"
+				>
+					@ArrowLeft()
+					<span>Regresar</span>
+				</a>
 			</div>
 		</div>
+	</div>
+}
+
+templ ErrorReload(title, msg string) {
+	@layout.Index() {
+		@Error(title, msg)
 	}
 }
