@@ -3,6 +3,7 @@ package view
 import (
 	"github.com/edgarSucre/jw/features/layout"
 	"github.com/edgarSucre/jw/features/components"
+	"github.com/edgarSucre/jw/features/icons"
 )
 
 templ IndexCmp() {
@@ -13,17 +14,25 @@ templ IndexCmp() {
 				<div class="min-w-[1170px]">
 					<!-- table header start -->
 					<div class="grid grid-cols-12 bg-[#F9FAFB] px-5 py-4 dark:bg-meta-4 lg:px-7.5 2xl:px-11">
-						<div class="col-span-3">
+						<div class="col-span-4">
 							<h5 class="font-medium text-[#637381] dark:text-bodydark">Nombre</h5>
 						</div>
-						<div class="col-span-3">
+						<div class="col-span-4">
 							<h5 class="font-medium text-[#637381] dark:text-bodydark">Email</h5>
 						</div>
-						<div class="col-span-3">
+						<div class="col-span-2">
 							<h5 class="font-medium text-[#637381] dark:text-bodydark">Admin</h5>
 						</div>
-						<div class="col-span-3">
-							<h5 class="font-medium text-[#637381] dark:text-bodydark">Actions</h5>
+						<div class="col-span-2 mx-auto">
+							<button
+								hx-get="/admin/users/new"
+								hx-target="#mainSection"
+								hx-push-url="true"
+								class={ components.ButtonBase, "py-1 px-2 flex justify-center" }
+							>
+								@icons.Plus()
+								Agregar
+							</button>
 						</div>
 					</div>
 					<!-- table header end -->

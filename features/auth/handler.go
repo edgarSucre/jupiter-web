@@ -13,6 +13,8 @@ import (
 type (
 	navigator interface {
 		Home(echo.Context) error
+		Login(echo.Context) error
+		IsHxRequest(echo.Context) bool
 	}
 
 	useCase interface {
@@ -21,7 +23,7 @@ type (
 
 	sessionManager interface {
 		New(echo.Context, User) error
-		Expire(echo.Context)
+		Expire(echo.Context) echo.Context
 	}
 
 	renderer interface {
@@ -55,26 +57,26 @@ func (h *Handler) Authenticate(c echo.Context) error {
 			"title": "No se pudo validar las credenciales, intentelo mas tarde",
 		}
 
-		return h.Render(c, http.StatusUnprocessableEntity, view.LoginForm(errors, ""))
+		return h.Render(c, http.StatusUnprocessableEntity, view.Login(errors, ""))
 	}
 
 	params.Sanitize()
 
 	if errors := params.Validate(); len(errors) > 0 {
-		return h.Render(c, http.StatusUnprocessableEntity, view.LoginForm(errors, params.UserName))
+		return h.Render(c, http.StatusUnprocessableEntity, view.Login(errors, params.UserName))
 	}
 
 	user, err := h.useCase.Login(ctx, *params)
 	if err != nil {
 		errors := domain.ViewErr(err, "No se pudo validar las credenciales, intentelo mas tarde")
 
-		return h.Render(c, http.StatusUnprocessableEntity, view.LoginForm(errors, params.UserName))
+		return h.Render(c, http.StatusUnprocessableEntity, view.Login(errors, params.UserName))
 	}
 
 	if err := h.sessionManager.New(c, user); err != nil {
 		errors := domain.ViewErr(err, "No se pudo validar las credenciales, intentelo mas tarde")
 
-		return h.Render(c, http.StatusUnprocessableEntity, view.LoginForm(errors, params.UserName))
+		return h.Render(c, http.StatusUnprocessableEntity, view.Login(errors, params.UserName))
 	}
 
 	return h.navigator.Home(c)
@@ -82,12 +84,16 @@ func (h *Handler) Authenticate(c echo.Context) error {
 
 // GET /auth/login
 func (h *Handler) Login(c echo.Context) error {
-	return h.Render(c, http.StatusOK, view.Login())
+	if h.navigator.IsHxRequest(c) {
+		return h.Render(c, http.StatusOK, view.Login(nil, ""))
+	}
+
+	return h.Render(c, http.StatusOK, view.LoginReload())
 }
 
 // GET /auth/logout
 func (h *Handler) Logout(c echo.Context) error {
-	h.sessionManager.Expire(c)
+	c = h.sessionManager.Expire(c)
 
-	return h.navigator.Home(c)
+	return h.navigator.Login(c)
 }

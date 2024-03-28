@@ -12,10 +12,11 @@ import "bytes"
 
 import (
 	"github.com/edgarSucre/jw/features/components"
+	"github.com/edgarSucre/jw/features/icons"
 	"github.com/edgarSucre/jw/features/layout"
 )
 
-func Login() templ.Component {
+func LoginReload() templ.Component {
 	return templ.ComponentFunc(func(ctx context.Context, templ_7745c5c3_W io.Writer) (templ_7745c5c3_Err error) {
 		templ_7745c5c3_Buffer, templ_7745c5c3_IsBuffer := templ_7745c5c3_W.(*bytes.Buffer)
 		if !templ_7745c5c3_IsBuffer {
@@ -34,15 +35,7 @@ func Login() templ.Component {
 				templ_7745c5c3_Buffer = templ.GetBuffer()
 				defer templ.ReleaseBuffer(templ_7745c5c3_Buffer)
 			}
-			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<main class=\"flex justify-center items-center h-screen text-boxdark bg-boxdark-2\"><div class=\"w-full md:w-125 rounded-sm border border-stroke bg-white shadow-default\"><div class=\"w-full p-4 sm:p-12.5 xl:p-17.5\"><h2 class=\"mb-9 text-2xl font-bold text-black sm:text-title-xl2\">Inicio</h2><div id=\"loginForm\">")
-			if templ_7745c5c3_Err != nil {
-				return templ_7745c5c3_Err
-			}
-			templ_7745c5c3_Err = LoginForm(nil, "").Render(ctx, templ_7745c5c3_Buffer)
-			if templ_7745c5c3_Err != nil {
-				return templ_7745c5c3_Err
-			}
-			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</div></div></div></main>")
+			templ_7745c5c3_Err = Login(nil, "").Render(ctx, templ_7745c5c3_Buffer)
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
@@ -62,7 +55,7 @@ func Login() templ.Component {
 	})
 }
 
-func LoginForm(errors map[string]string, userName string) templ.Component {
+func Login(errors map[string]string, userName string) templ.Component {
 	return templ.ComponentFunc(func(ctx context.Context, templ_7745c5c3_W io.Writer) (templ_7745c5c3_Err error) {
 		templ_7745c5c3_Buffer, templ_7745c5c3_IsBuffer := templ_7745c5c3_W.(*bytes.Buffer)
 		if !templ_7745c5c3_IsBuffer {
@@ -75,14 +68,14 @@ func LoginForm(errors map[string]string, userName string) templ.Component {
 			templ_7745c5c3_Var3 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<span class=\"mt-2 text-lg text-danger font-medium\">")
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<main id=\"loginForm\" class=\"flex justify-center items-center h-screen text-boxdark bg-boxdark-2\"><div class=\"w-full md:w-125 rounded-sm border border-stroke bg-white shadow-default\"><div class=\"w-full p-4 sm:p-12.5 xl:p-17.5\"><h2 class=\"mb-5 text-2xl font-bold text-black sm:text-title-xl2\">Inicio</h2><div><span class=\"mt-2 text-lg text-danger font-medium\">")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
 		var templ_7745c5c3_Var4 string
 		templ_7745c5c3_Var4, templ_7745c5c3_Err = templ.JoinStringErrs(errors["title"])
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `features/auth/view/login.templ`, Line: 23, Col: 69}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `features/auth/view/login.templ`, Line: 20, Col: 73}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var4))
 		if templ_7745c5c3_Err != nil {
@@ -98,7 +91,7 @@ func LoginForm(errors map[string]string, userName string) templ.Component {
 				templ_7745c5c3_Buffer = templ.GetBuffer()
 				defer templ.ReleaseBuffer(templ_7745c5c3_Buffer)
 			}
-			templ_7745c5c3_Err = components.Envelop().Render(ctx, templ_7745c5c3_Buffer)
+			templ_7745c5c3_Err = icons.Envelop().Render(ctx, templ_7745c5c3_Buffer)
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
@@ -123,7 +116,7 @@ func LoginForm(errors map[string]string, userName string) templ.Component {
 				templ_7745c5c3_Buffer = templ.GetBuffer()
 				defer templ.ReleaseBuffer(templ_7745c5c3_Buffer)
 			}
-			templ_7745c5c3_Err = components.LockClosed().Render(ctx, templ_7745c5c3_Buffer)
+			templ_7745c5c3_Err = icons.LockClosed().Render(ctx, templ_7745c5c3_Buffer)
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
@@ -147,7 +140,7 @@ func LoginForm(errors map[string]string, userName string) templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		var templ_7745c5c3_Var7 = []any{components.ButtonBase}
+		var templ_7745c5c3_Var7 = []any{components.ButtonBase, "w-full p-4 text-lg"}
 		templ_7745c5c3_Err = templ.RenderCSSItems(ctx, templ_7745c5c3_Buffer, templ_7745c5c3_Var7...)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
@@ -160,7 +153,7 @@ func LoginForm(errors map[string]string, userName string) templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("\" hx-post=\"/auth/login\" hx-target=\"#loginForm\">Inicio</button></div></form>")
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("\" hx-post=\"/auth/login\" hx-target=\"#loginForm\">Inicio</button></div></form></div></div></div></main>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}

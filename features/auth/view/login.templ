@@ -3,54 +3,55 @@ package view
 import (
 	"github.com/edgarSucre/jw/features/layout"
 	"github.com/edgarSucre/jw/features/components"
+	"github.com/edgarSucre/jw/features/icons"
 )
 
-templ Login() {
+templ LoginReload() {
 	@layout.Base() {
-		<main class="flex justify-center items-center h-screen text-boxdark bg-boxdark-2">
-			<div class="w-full md:w-125 rounded-sm border border-stroke bg-white shadow-default">
-				<div class="w-full p-4 sm:p-12.5 xl:p-17.5">
-					<h2 class="mb-9 text-2xl font-bold text-black sm:text-title-xl2">Inicio</h2>
-					<div id="loginForm">
-						@LoginForm(nil, "")
-					</div>
-				</div>
-			</div>
-		</main>
+		@Login(nil, "")
 	}
 }
 
-templ LoginForm(errors map[string]string, userName string) {
-	<span class="mt-2 text-lg text-danger font-medium">{ errors["title"] }</span>
-	<form>
-		@components.TextInput(components.InputParams{
-			Err:         errors["username"],
-			Label:       "Usuario",
-			Name:        "username",
-			PlaceHolder: "Ingrese su usuario",
-			Value:       userName,
-		}) {
-			@components.Envelop()
-		}
-		@components.TextInput(components.InputParams{
-			Err:          errors["password"],
-			Label:        "Contraseña",
-			Name:         "password",
-			Pass:         true,
-			PlaceHolder:  "Ingrese su contraseña",
-			WrapperClass: "mb-7",
-		}) {
-			@components.LockClosed()
-		}
-		<div class="mb-4">
-			<button
-				type="submit"
-				class={ components.ButtonBase }
-				hx-post="/auth/login"
-				hx-target="#loginForm"
-			>
-				Inicio
-			</button>
+templ Login(errors map[string]string, userName string) {
+	<main id="loginForm" class="flex justify-center items-center h-screen text-boxdark bg-boxdark-2">
+		<div class="w-full md:w-125 rounded-sm border border-stroke bg-white shadow-default">
+			<div class="w-full p-4 sm:p-12.5 xl:p-17.5">
+				<h2 class="mb-5 text-2xl font-bold text-black sm:text-title-xl2">Inicio</h2>
+				<div>
+					<span class="mt-2 text-lg text-danger font-medium">{ errors["title"] }</span>
+					<form>
+						@components.TextInput(components.InputParams{
+							Err:         errors["username"],
+							Label:       "Usuario",
+							Name:        "username",
+							PlaceHolder: "Ingrese su usuario",
+							Value:       userName,
+						}) {
+							@icons.Envelop()
+						}
+						@components.TextInput(components.InputParams{
+							Err:          errors["password"],
+							Label:        "Contraseña",
+							Name:         "password",
+							Pass:         true,
+							PlaceHolder:  "Ingrese su contraseña",
+							WrapperClass: "mb-7",
+						}) {
+							@icons.LockClosed()
+						}
+						<div class="mb-4">
+							<button
+								type="submit"
+								class={ components.ButtonBase, "w-full p-4 text-lg" }
+								hx-post="/auth/login"
+								hx-target="#loginForm"
+							>
+								Inicio
+							</button>
+						</div>
+					</form>
+				</div>
+			</div>
 		</div>
-	</form>
+	</main>
 }

@@ -12,6 +12,7 @@ import "bytes"
 
 import (
 	"github.com/edgarSucre/jw/features/components"
+	"github.com/edgarSucre/jw/features/icons"
 	"github.com/edgarSucre/jw/features/layout"
 )
 
@@ -32,7 +33,32 @@ func IndexCmp() templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<div class=\"flex flex-col gap-5 md:gap-7 2xl:gap-10\"><div class=\"overflow-hidden rounded-[10px]\"><div class=\"max-w-full overflow-x-auto\"><div class=\"min-w-[1170px]\"><!-- table header start --><div class=\"grid grid-cols-12 bg-[#F9FAFB] px-5 py-4 dark:bg-meta-4 lg:px-7.5 2xl:px-11\"><div class=\"col-span-3\"><h5 class=\"font-medium text-[#637381] dark:text-bodydark\">Nombre</h5></div><div class=\"col-span-3\"><h5 class=\"font-medium text-[#637381] dark:text-bodydark\">Email</h5></div><div class=\"col-span-3\"><h5 class=\"font-medium text-[#637381] dark:text-bodydark\">Admin</h5></div><div class=\"col-span-3\"><h5 class=\"font-medium text-[#637381] dark:text-bodydark\">Actions</h5></div></div><!-- table header end --><!-- table body start --><div hx-trigger=\"load\" hx hx-get=\"/admin/users/list\" hx-swap=\"innerHTML\" class=\"bg-white dark:bg-boxdark\">cargando usuarios..</div></div></div></div></div>")
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<div class=\"flex flex-col gap-5 md:gap-7 2xl:gap-10\"><div class=\"overflow-hidden rounded-[10px]\"><div class=\"max-w-full overflow-x-auto\"><div class=\"min-w-[1170px]\"><!-- table header start --><div class=\"grid grid-cols-12 bg-[#F9FAFB] px-5 py-4 dark:bg-meta-4 lg:px-7.5 2xl:px-11\"><div class=\"col-span-4\"><h5 class=\"font-medium text-[#637381] dark:text-bodydark\">Nombre</h5></div><div class=\"col-span-4\"><h5 class=\"font-medium text-[#637381] dark:text-bodydark\">Email</h5></div><div class=\"col-span-2\"><h5 class=\"font-medium text-[#637381] dark:text-bodydark\">Admin</h5></div><div class=\"col-span-2 mx-auto\">")
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
+		var templ_7745c5c3_Var2 = []any{components.ButtonBase, "py-1 px-2 flex justify-center"}
+		templ_7745c5c3_Err = templ.RenderCSSItems(ctx, templ_7745c5c3_Buffer, templ_7745c5c3_Var2...)
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<button hx-get=\"/admin/users/new\" hx-target=\"#mainSection\" hx-push-url=\"true\" class=\"")
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ.CSSClasses(templ_7745c5c3_Var2).String()))
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("\">")
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
+		templ_7745c5c3_Err = icons.Plus().Render(ctx, templ_7745c5c3_Buffer)
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("Agregar</button></div></div><!-- table header end --><!-- table body start --><div hx-trigger=\"load\" hx hx-get=\"/admin/users/list\" hx-swap=\"innerHTML\" class=\"bg-white dark:bg-boxdark\">cargando usuarios..</div></div></div></div></div>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -51,12 +77,12 @@ func IndexFull() templ.Component {
 			defer templ.ReleaseBuffer(templ_7745c5c3_Buffer)
 		}
 		ctx = templ.InitializeContext(ctx)
-		templ_7745c5c3_Var2 := templ.GetChildren(ctx)
-		if templ_7745c5c3_Var2 == nil {
-			templ_7745c5c3_Var2 = templ.NopComponent
+		templ_7745c5c3_Var3 := templ.GetChildren(ctx)
+		if templ_7745c5c3_Var3 == nil {
+			templ_7745c5c3_Var3 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
-		templ_7745c5c3_Var3 := templ.ComponentFunc(func(ctx context.Context, templ_7745c5c3_W io.Writer) (templ_7745c5c3_Err error) {
+		templ_7745c5c3_Var4 := templ.ComponentFunc(func(ctx context.Context, templ_7745c5c3_W io.Writer) (templ_7745c5c3_Err error) {
 			templ_7745c5c3_Buffer, templ_7745c5c3_IsBuffer := templ_7745c5c3_W.(*bytes.Buffer)
 			if !templ_7745c5c3_IsBuffer {
 				templ_7745c5c3_Buffer = templ.GetBuffer()
@@ -71,7 +97,7 @@ func IndexFull() templ.Component {
 			}
 			return templ_7745c5c3_Err
 		})
-		templ_7745c5c3_Err = layout.Index().Render(templ.WithChildren(ctx, templ_7745c5c3_Var3), templ_7745c5c3_Buffer)
+		templ_7745c5c3_Err = layout.Index().Render(templ.WithChildren(ctx, templ_7745c5c3_Var4), templ_7745c5c3_Buffer)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}

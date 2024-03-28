@@ -2,6 +2,7 @@ package components
 
 import (
 	"github.com/edgarSucre/jw/features/layout"
+	"github.com/edgarSucre/jw/features/icons"
 )
 
 templ Error(title, message string) {
@@ -32,7 +33,7 @@ templ Error(title, message string) {
 					hx-on:click="history.back()"
 					class="mt-7.5 inline-flex items-center gap-2 cursor-pointer rounded-md bg-primary px-6 py-3 font-medium text-white hover:bg-opacity-90"
 				>
-					@ArrowLeft()
+					@icons.ArrowLeft()
 					<span>Regresar</span>
 				</a>
 			</div>

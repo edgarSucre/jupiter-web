@@ -635,6 +635,14 @@ body{
   grid-column: span 3 / span 3;
 }
 
+.col-span-2{
+  grid-column: span 2 / span 2;
+}
+
+.col-span-4{
+  grid-column: span 4 / span 4;
+}
+
 .m-0{
   margin: 0px;
 }
@@ -699,6 +707,10 @@ body{
 
 .mt-7\.5{
   margin-top: 1.875rem;
+}
+
+.mb-5{
+  margin-bottom: 1.25rem;
 }
 
 .block{
@@ -813,6 +825,22 @@ body{
   width: 100%;
 }
 
+.w-auto{
+  width: auto;
+}
+
+.w-64{
+  width: 16rem;
+}
+
+.w-2\/3{
+  width: 66.666667%;
+}
+
+.w-1\/3{
+  width: 33.333333%;
+}
+
 .min-w-\[1170px\]{
   min-width: 1170px;
 }
@@ -823,6 +851,10 @@ body{
 
 .max-w-screen-2xl{
   max-width: 1536px;
+}
+
+.max-w-242\.5{
+  max-width: 60.625rem;
 }
 
 .flex-1{
@@ -1043,6 +1075,10 @@ body{
   padding: 1.5rem;
 }
 
+.p-2{
+  padding: 0.5rem;
+}
+
 .px-4{
   padding-left: 1rem;
   padding-right: 1rem;
@@ -1098,6 +1134,16 @@ body{
   padding-bottom: 1.875rem;
 }
 
+.py-1{
+  padding-top: 0.25rem;
+  padding-bottom: 0.25rem;
+}
+
+.px-2{
+  padding-left: 0.5rem;
+  padding-right: 0.5rem;
+}
+
 .pb-3{
   padding-bottom: 0.75rem;
 }
@@ -1108,6 +1154,10 @@ body{
 
 .pr-10{
   padding-right: 2.5rem;
+}
+
+.pb-2{
+  padding-bottom: 0.5rem;
 }
 
 .text-center{
@@ -1203,6 +1253,11 @@ body{
 .text-white{
   --tw-text-opacity: 1;
   color: rgb(255 255 255 / var(--tw-text-opacity));
+}
+
+.text-primary{
+  --tw-text-opacity: 1;
+  color: rgb(60 80 224 / var(--tw-text-opacity));
 }
 
 .opacity-0{
@@ -1304,6 +1359,11 @@ body{
   /* IE and Edge */
   scrollbar-width: none;
   /* Firefox */
+}
+
+.hover\:border-primary:hover{
+  --tw-border-opacity: 1;
+  border-color: rgb(60 80 224 / var(--tw-border-opacity));
 }
 
 .hover\:bg-graydark:hover{

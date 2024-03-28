@@ -23,6 +23,10 @@ func (server *Server) setRoutes(e *echo.Echo) {
 
 	// dashboard
 	e.GET("/", func(c echo.Context) error {
+		if isHxRequest(c) {
+			return render(c, http.StatusOK, layout.Main())
+		}
+
 		return render(c, http.StatusOK, layout.Index())
 	})
 
@@ -44,9 +48,6 @@ func (server *Server) setRoutes(e *echo.Echo) {
 	auth.POST("/login", server.authHandler.Authenticate)
 	auth.GET("/logout", server.authHandler.Logout)
 
-	// Verifica la session, excepto en rutas especificas
-	e.Use(sessionMiddleware(server.sessionManager))
-
 	e.GET("/notfound", func(c echo.Context) error {
 		title := "Lo sentimos, no se puede encontrar la pagina"
 		msg := "La pagina que busca pudo haber sido movida, borrada o no existe"
@@ -61,6 +62,9 @@ func (server *Server) setRoutes(e *echo.Echo) {
 	e.GET("*", func(c echo.Context) error {
 		return goNotFound(c)
 	})
+
+	// Verifica la session, excepto en rutas especificas
+	e.Use(sessionMiddleware(server.sessionManager))
 }
 
 type (
@@ -84,9 +88,17 @@ func (nav Navigator) NotFound(c echo.Context) error {
 	return goNotFound(c)
 }
 
+func (nav Navigator) IsHxRequest(c echo.Context) bool {
+	return isHxRequest(c)
+}
+
 func goToLogin(c echo.Context) error {
 	if isHxRequest(c) {
-		c.Response().Header().Set(hxRedirectHeaderName, "/auth/login")
+		asd := c.Response().Header().Get(echo.HeaderSetCookie)
+		_ = asd
+		location := locationString(Location{Path: "/auth/login", Target: "body"})
+		c.Response().Header().Set(hxLocationHeaderName, location)
+
 		return c.NoContent(http.StatusOK)
 	}
 
@@ -95,7 +107,8 @@ func goToLogin(c echo.Context) error {
 
 func goToHome(c echo.Context) error {
 	if isHxRequest(c) {
-		c.Response().Header().Set(hxRedirectHeaderName, "/")
+		location := locationString(Location{Path: "/", Target: "#mainSection"})
+		c.Response().Header().Set(hxLocationHeaderName, location)
 		return c.NoContent(http.StatusOK)
 	}
 

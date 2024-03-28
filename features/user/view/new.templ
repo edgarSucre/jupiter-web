@@ -5,63 +5,67 @@ import (
 	"github.com/edgarSucre/jw/features/components"
 )
 
-templ NewUser(user UserForm, errors map[string]string) {
+templ NewReload(user UserForm, errors map[string]string) {
 	@layout.Index() {
-		<div class="flex flex-col gap-5 md:gap-7 2xl:gap-10">
-			<div class="rounded-[10px] max-w-full overflow-x-auto pb-3 flex justify-center">
-				@NewUserForm(user, errors)
-			</div>
-		</div>
+		@New(user, errors)
 	}
 }
 
-templ NewUserForm(user UserForm, errors map[string]string) {
-	<form class="bg-white dark:bg-boxdark p-6 shadow-lg w-1/2">
-		<h1 class="text-3xl block text-center font-semibold text-graydark dark:text-gray-2">Nuevo Usuario</h1>
-		<span class="inline-flex mt-2 text-lg text-danger font-medium">{ errors["title"] }</span>
-		@components.TextInput(components.InputParams{
-			Err:         errors["name"],
-			Label:       "Nombre",
-			Name:        "name",
-			PlaceHolder: "Nombre completo...",
-			Required:    true,
-			Value:       user.Name,
-		})
-		@components.TextInput(components.InputParams{
-			Err:         errors["username"],
-			Label:       "Usuario",
-			Name:        "username",
-			PlaceHolder: "Usuario...",
-			Required:    true,
-			Value:       user.UserName,
-		})
-		@components.TextInput(components.InputParams{
-			Err:         errors["password"],
-			Label:       "Contraseña",
-			Name:        "password",
-			Pass:        true,
-			PlaceHolder: "Inserte Contraseña...",
-			Required:    true,
-			Value:       user.Password,
-		})
-		@components.TextInput(components.InputParams{
-			Err:         errors["repeat_password"],
-			Label:       "Confirmar Contraseña",
-			Name:        "repeat_password",
-			Pass:        true,
-			PlaceHolder: "Repetir Contraseña...",
-			Required:    true,
-			Value:       user.RepeatPassword,
-		})
-		<div class="b-5">
-			<button
-				hx-post="/admin/users"
-				hx-target="closest form"
-				hx-swap="outerHTML"
-				class={ components.ButtonBase }
-			>
-				Crear Usuario
-			</button>
+templ New(user UserForm, errors map[string]string) {
+	<div id="newUser" class="max-w-full w-2/3 mx-auto">
+		@components.Title("Nuevo Usuario") {
+			@components.BreadLink("Usuarios /", "/admin/users")
+			@components.BreadCurrent("Nuevo")
+		}
+		<div class="bg-white dark:bg-boxdark p-6 shadow-lg rounded-[10px] w-full">
+			<form class="w-2/3 mx-auto">
+				// <h1 class="text-3xl block text-center font-semibold text-graydark dark:text-gray-2">Nuevo Usuario</h1>
+				<span class="mt-2 text-lg text-danger font-medium">{ errors["title"] }</span>
+				@components.TextInput(components.InputParams{
+					Err:         errors["name"],
+					Label:       "Nombre",
+					Name:        "name",
+					PlaceHolder: "Nombre completo...",
+					Required:    true,
+					Value:       user.Name,
+				})
+				@components.TextInput(components.InputParams{
+					Err:         errors["username"],
+					Label:       "Usuario",
+					Name:        "username",
+					PlaceHolder: "Usuario...",
+					Required:    true,
+					Value:       user.UserName,
+				})
+				@components.TextInput(components.InputParams{
+					Err:         errors["password"],
+					Label:       "Contraseña",
+					Name:        "password",
+					Pass:        true,
+					PlaceHolder: "Inserte Contraseña...",
+					Required:    true,
+					Value:       user.Password,
+				})
+				@components.TextInput(components.InputParams{
+					Err:         errors["repeat_password"],
+					Label:       "Confirmar Contraseña",
+					Name:        "repeat_password",
+					Pass:        true,
+					PlaceHolder: "Repetir Contraseña...",
+					Required:    true,
+					Value:       user.RepeatPassword,
+				})
+				<div class="b-5">
+					<button
+						hx-post="/admin/users"
+						hx-target="#newUser"
+						hx-swap="outerHTML"
+						class={ components.ButtonBase, "p-4 text-lg w-full" }
+					>
+						Crear Usuario
+					</button>
+				</div>
+			</form>
 		</div>
-	</form>
+	</div>
 }

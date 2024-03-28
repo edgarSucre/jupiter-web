@@ -40,20 +40,20 @@ func (h *Handler) Create(c echo.Context) error {
 	if err := c.Bind(params); err != nil {
 		errors := map[string]string{"title": "no se pudo crear el usuario, intentelo mas tarde"}
 
-		return h.Render(c, http.StatusUnprocessableEntity, view.NewUserForm(view.UserForm{}, errors))
+		return h.Render(c, http.StatusUnprocessableEntity, view.New(view.UserForm{}, errors))
 	}
 
 	params.Sanitize()
 
 	if errors := params.Validate(); len(errors) > 0 {
-		return h.Render(c, http.StatusUnprocessableEntity, view.NewUserForm(params.View(), errors))
+		return h.Render(c, http.StatusUnprocessableEntity, view.New(params.View(), errors))
 	}
 
 	_, err := h.useCase.Create(ctx, *params)
 	if err != nil {
 		errors := map[string]string{"title": "no se pudo crear el usuario, intentelo mas tarde"}
 
-		return h.Render(c, http.StatusUnprocessableEntity, view.NewUserForm(params.View(), errors))
+		return h.Render(c, http.StatusUnprocessableEntity, view.New(params.View(), errors))
 	}
 
 	return c.Redirect(http.StatusSeeOther, "/admin/users")
@@ -81,5 +81,11 @@ func (h *Handler) List(c echo.Context) error {
 
 // GET /admin/users/new
 func (h *Handler) New(c echo.Context) error {
-	return h.Render(c, http.StatusOK, view.NewUser(view.UserForm{}, map[string]string{}))
+	user, errors := view.UserForm{}, map[string]string{}
+
+	if c.Request().Header.Get("Hx-Request") == "true" {
+		return h.Render(c, http.StatusOK, view.New(user, errors))
+	}
+
+	return h.Render(c, http.StatusOK, view.NewReload(user, errors))
 }

@@ -1,26 +1,30 @@
 package view
 
+import (
+	"github.com/edgarSucre/jw/features/icons"
+)
+
 templ List(list []User) {
 	for _, user := range list {
 		<div id={ user.TemplID } class="grid grid-cols-12 border-t border-[#EEEEEE] px-5 py-4 dark:border-strokedark lg:px-7.5 2xl:px-11">
-			<div class="col-span-3">
+			<div class="col-span-4">
 				<p class="text-[#637381] dark:text-bodydark">{ user.Name }</p>
 			</div>
-			<div class="col-span-3">
+			<div class="col-span-4">
 				<p class="text-[#637381] dark:text-bodydark">
 					Email del usuario pronto..
 				</p>
 			</div>
-			<div class="col-span-3">
+			<div class="col-span-2">
 				<p class="text-[#637381] dark:text-bodydark">
 					if user.Admin {
-						Es Admin
+						@icons.Check()
 					} else {
-						No es Admin
+						@icons.XMark()
 					}
 				</p>
 			</div>
-			<div class="col-span-3">
+			<div class="col-span-2 mx-auto">
 				<p class="text-[#637381] dark:text-bodydark">Acciones pronto..</p>
 			</div>
 		</div>
