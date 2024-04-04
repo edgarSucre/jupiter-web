@@ -27,17 +27,17 @@ type JupyterUser struct {
 
 type (
 	User struct {
+		Admin    bool
+		Email    string
 		ID       int64
 		Name     string
-		UserName string
-		Admin    bool
 		Password string
 	}
 
 	CreateUserParams struct {
-		Name     string
-		UserName string
-		Password string
 		Admin    bool
+		Email    string
+		Name     string
+		Password string
 	}
 )

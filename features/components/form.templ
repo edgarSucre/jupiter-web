@@ -1,5 +1,7 @@
 package components
 
+import "github.com/edgarSucre/jw/features/icons"
+
 templ Title(caption string) {
 	<div class="mb-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
 		<h2 class="text-title-md2 font-bold text-black dark:text-white">
@@ -78,6 +80,81 @@ templ TextInput(input InputParams) {
 			<span class="absolute right-4 top-4">
 				{ children... }
 			</span>
+		</div>
+	</div>
+}
+
+templ Toggle(input InputParams) {
+	<div class={ defaultWrapperClass(input.WrapperClass) }>
+		<label class={ LabelBase }>
+			{ input.Label }
+		</label>
+		@toggle(input.Name, input.Value)
+	</div>
+}
+
+var checkboxWrapperToggleClass = "!right-1 !translate-x-full !bg-primary dark:!bg-white"
+
+var checkboxWrapperBaseClass = "dot absolute left-1 top-1 flex h-6 w-6 items-center justify-center rounded-full bg-white transition"
+
+script toggleSwitch(name string, classes string) {
+	divWraper = document.querySelector('#' + name + 'switch');
+	
+	classes.split(' ').map(c => {
+		divWraper.classList.toggle(c);
+	});
+
+	on = document.querySelector('#' + name + 'on');
+	on.classList.toggle('!block');
+
+	off = document.querySelector('#' + name + 'off');
+	off.classList.toggle('hidden');
+  
+	hidden = document.getElementById(name);
+	
+	if (hidden.value === "false") {
+		hidden.value = "true";
+		return;
+	}
+
+	hidden.value = "false";
+}
+
+func toggleCheckboxDefaultValue(value string) string {
+	if value == "true" {
+		return value
+	}
+
+	return "false"
+}
+
+templ toggle(name string, value string) {
+	<div>
+		<div
+			class="relative cursor-pointer"
+			hx-on:click={ toggleSwitch(name, checkboxWrapperToggleClass) }
+		>
+			<input
+				id={ name }
+				name={ name }
+				type="hidden"
+				value={ toggleCheckboxDefaultValue(value) }
+			/>
+			<div class="block h-8 w-14 rounded-full bg-meta-9 dark:bg-[#5A616B]"></div>
+			<div
+				id={ name + "switch" }
+				class={ templ.KV(checkboxWrapperToggleClass, value == "true"), checkboxWrapperBaseClass }
+			>
+				<span
+					id={ name + "on" }
+					class={ templ.KV("!block", value == "true"), "hidden text-white dark:text-bodydark" }
+				>
+					@icons.Check("")
+				</span>
+				<span id={ name + "off" } class={ templ.KV("hidden", value == "true") }>
+					@icons.XMark("h-4 w-4 stroke-current")
+				</span>
+			</div>
 		</div>
 	</div>
 }

@@ -127,12 +127,12 @@ func New(user UserForm, errors map[string]string) templ.Component {
 			return templ_7745c5c3_Err
 		}
 		templ_7745c5c3_Err = components.TextInput(components.InputParams{
-			Err:         errors["username"],
-			Label:       "Usuario",
-			Name:        "username",
-			PlaceHolder: "Usuario...",
+			Err:         errors["email"],
+			Label:       "Email",
+			Name:        "email",
+			PlaceHolder: "Email...",
 			Required:    true,
-			Value:       user.UserName,
+			Value:       user.Email,
 		}).Render(ctx, templ_7745c5c3_Buffer)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
@@ -157,6 +157,15 @@ func New(user UserForm, errors map[string]string) templ.Component {
 			PlaceHolder: "Repetir Contraseña...",
 			Required:    true,
 			Value:       user.RepeatPassword,
+		}).Render(ctx, templ_7745c5c3_Buffer)
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
+		templ_7745c5c3_Err = components.Toggle(components.InputParams{
+			Err:   errors["admin"],
+			Label: "Usuario es Admin?",
+			Name:  "admin",
+			Value: user.Admin,
 		}).Render(ctx, templ_7745c5c3_Buffer)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err

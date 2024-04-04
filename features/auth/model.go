@@ -7,20 +7,20 @@ import (
 )
 
 type LoginParams struct {
-	UserName string `form:"username"`
+	Email    string `form:"email"`
 	Password string `form:"password"`
 }
 
 const (
-	errMsgNoUserName = "usuario es requerido"
+	errMsgNoEmail    = "email es requerido"
 	errMSgNoPassword = "contraseña es requerido"
 )
 
 func (params LoginParams) Validate() map[string]string {
 	errors := make(map[string]string)
 
-	if validate.IsEmpty(params.UserName) {
-		errors["username"] = errMsgNoUserName
+	if validate.IsEmpty(params.Email) {
+		errors["email"] = errMsgNoEmail
 	}
 
 	if validate.IsEmpty(params.Password) {
@@ -31,7 +31,7 @@ func (params LoginParams) Validate() map[string]string {
 }
 
 func (params *LoginParams) Sanitize() {
-	params.UserName = escape.AlphaNumeric(params.UserName, false)
+	params.Email = escape.Email(params.Email)
 	params.Password = escape.Password(params.Password)
 }
 

@@ -30,12 +30,12 @@ templ New(user UserForm, errors map[string]string) {
 					Value:       user.Name,
 				})
 				@components.TextInput(components.InputParams{
-					Err:         errors["username"],
-					Label:       "Usuario",
-					Name:        "username",
-					PlaceHolder: "Usuario...",
+					Err:         errors["email"],
+					Label:       "Email",
+					Name:        "email",
+					PlaceHolder: "Email...",
 					Required:    true,
-					Value:       user.UserName,
+					Value:       user.Email,
 				})
 				@components.TextInput(components.InputParams{
 					Err:         errors["password"],
@@ -54,6 +54,12 @@ templ New(user UserForm, errors map[string]string) {
 					PlaceHolder: "Repetir Contraseña...",
 					Required:    true,
 					Value:       user.RepeatPassword,
+				})
+				@components.Toggle(components.InputParams{
+					Err:   errors["admin"],
+					Label: "Usuario es Admin?",
+					Name:  "admin",
+					Value: user.Admin,
 				})
 				<div class="b-5">
 					<button

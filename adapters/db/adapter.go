@@ -4,19 +4,19 @@ import "github.com/edgarSucre/jw/domain"
 
 func (u User) domain() domain.User {
 	return domain.User{
-		ID:       u.ID,
-		Name:     u.Name,
-		UserName: u.Username,
-		Admin:    u.Admin > 0,
+		Admin: u.Admin > 0,
+		Email: u.Email,
+		ID:    u.ID,
+		Name:  u.Name,
 	}
 }
 
 func (u User) forAuth() domain.User {
 	return domain.User{
+		Admin:    u.Admin > 0,
+		Email:    u.Email,
 		ID:       u.ID,
 		Name:     u.Name,
-		UserName: u.Username,
-		Admin:    u.Admin > 0,
 		Password: u.Password,
 	}
 }
@@ -37,5 +37,5 @@ func (up *CreateUserParams) copyDomain(params domain.CreateUserParams) {
 
 	up.Name = params.Name
 	up.Password = params.Password
-	up.Username = params.UserName
+	up.Email = params.Email
 }

@@ -1,6 +1,6 @@
 -- name: CreateUser :one
 INSERT INTO users (
-    admin, name, username, password
+    admin, name, email, password
 ) VALUES (
     ?, ?, ?, ?
 )
@@ -11,7 +11,7 @@ SELECT *
 FROM users
 ORDER BY id;
 
--- name: GetUserByUserName :one
+-- name: GetUserByEmail :one
 SELECT *
 FROM users
-WHERE username = ?;
+WHERE email = ?;

@@ -12,15 +12,15 @@ templ List(list []User) {
 			</div>
 			<div class="col-span-4">
 				<p class="text-[#637381] dark:text-bodydark">
-					Email del usuario pronto..
+					{ user.Email }
 				</p>
 			</div>
 			<div class="col-span-2">
 				<p class="text-[#637381] dark:text-bodydark">
 					if user.Admin {
-						@icons.Check()
+						@icons.Check("")
 					} else {
-						@icons.XMark()
+						@icons.XMark("")
 					}
 				</p>
 			</div>

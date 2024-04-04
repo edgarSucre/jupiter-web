@@ -2,13 +2,15 @@ package view
 
 type User struct {
 	Admin   bool
-	TemplID string
+	Email   string
 	Name    string
+	TemplID string
 }
 
 type UserForm struct {
+	Admin          string
+	Email          string
 	Name           string
-	UserName       string
 	Password       string
 	RepeatPassword string
 }

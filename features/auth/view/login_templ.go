@@ -55,7 +55,7 @@ func LoginReload() templ.Component {
 	})
 }
 
-func Login(errors map[string]string, userName string) templ.Component {
+func Login(errors map[string]string, email string) templ.Component {
 	return templ.ComponentFunc(func(ctx context.Context, templ_7745c5c3_W io.Writer) (templ_7745c5c3_Err error) {
 		templ_7745c5c3_Buffer, templ_7745c5c3_IsBuffer := templ_7745c5c3_W.(*bytes.Buffer)
 		if !templ_7745c5c3_IsBuffer {
@@ -91,7 +91,7 @@ func Login(errors map[string]string, userName string) templ.Component {
 				templ_7745c5c3_Buffer = templ.GetBuffer()
 				defer templ.ReleaseBuffer(templ_7745c5c3_Buffer)
 			}
-			templ_7745c5c3_Err = icons.Envelop().Render(ctx, templ_7745c5c3_Buffer)
+			templ_7745c5c3_Err = icons.Envelop("").Render(ctx, templ_7745c5c3_Buffer)
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
@@ -101,11 +101,11 @@ func Login(errors map[string]string, userName string) templ.Component {
 			return templ_7745c5c3_Err
 		})
 		templ_7745c5c3_Err = components.TextInput(components.InputParams{
-			Err:         errors["username"],
-			Label:       "Usuario",
-			Name:        "username",
-			PlaceHolder: "Ingrese su usuario",
-			Value:       userName,
+			Err:         errors["email"],
+			Label:       "Email",
+			Name:        "email",
+			PlaceHolder: "Email",
+			Value:       email,
 		}).Render(templ.WithChildren(ctx, templ_7745c5c3_Var5), templ_7745c5c3_Buffer)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
@@ -116,7 +116,7 @@ func Login(errors map[string]string, userName string) templ.Component {
 				templ_7745c5c3_Buffer = templ.GetBuffer()
 				defer templ.ReleaseBuffer(templ_7745c5c3_Buffer)
 			}
-			templ_7745c5c3_Err = icons.LockClosed().Render(ctx, templ_7745c5c3_Buffer)
+			templ_7745c5c3_Err = icons.LockClosed("").Render(ctx, templ_7745c5c3_Buffer)
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}

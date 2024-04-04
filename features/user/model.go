@@ -2,6 +2,7 @@ package user
 
 import (
 	"fmt"
+	"net/mail"
 
 	"github.com/edgarSucre/jw/domain"
 	"github.com/edgarSucre/jw/features/user/view"
@@ -10,22 +11,23 @@ import (
 )
 
 type User struct {
-	Admin    bool   `json:"admin"`
-	ID       int64  `json:"id"`
-	Name     string `json:"name"`
-	UserName string `json:"username"`
+	Admin bool   `json:"admin"`
+	Email string `json:"email"`
+	ID    int64  `json:"id"`
+	Name  string `json:"name"`
 }
 
 func (u *User) FromDomain(du domain.User) {
 	u.Admin = du.Admin
+	u.Email = du.Email
 	u.ID = du.ID
 	u.Name = du.Name
-	u.UserName = du.UserName
 }
 
 func (u User) toView() view.User {
 	return view.User{
 		Admin:   u.Admin,
+		Email:   u.Email,
 		Name:    u.Name,
 		TemplID: fmt.Sprintf("user-%v", u.ID),
 	}
@@ -57,14 +59,16 @@ type CreateParams struct {
 	Name           string `form:"name"`
 	Password       string `form:"password"`
 	RepeatPassword string `form:"repeat_password"`
-	UserName       string `form:"username"`
+	Email          string `form:"email"`
 }
 
 const (
-	errMsgNoName          = "nombre es requerido"
-	errMsgNoUserName      = "nombre de usuario es requerido"
-	errMSgNoPassword      = "contraseña es requerido"
-	errMsgPasswordNoMatch = "contraseñas no son iguales"
+	errMsgBadEmail         = "email es invalido"
+	errMsgNoName           = "nombre es requerido"
+	errMsgNoEmail          = "email es requerido"
+	errMSgNoPassword       = "contraseña es requerido"
+	errMsgPasswordNoMatch  = "contraseñas no son iguales"
+	errMsgPasswordTooShort = "contraseña debe tener almenos 8 caracteres"
 )
 
 func (params CreateParams) Validate() map[string]string {
@@ -78,12 +82,20 @@ func (params CreateParams) Validate() map[string]string {
 		errors["password"] = errMSgNoPassword
 	}
 
+	if len([]rune(params.Password)) <= 7 {
+		errors["password"] = errMsgPasswordTooShort
+	}
+
 	if params.Password != params.RepeatPassword {
 		errors["repeat_password"] = errMsgPasswordNoMatch
 	}
 
-	if validate.IsEmpty(params.UserName) {
-		errors["username"] = errMsgNoUserName
+	if validate.IsEmpty(params.Email) {
+		errors["email"] = errMsgNoEmail
+	}
+
+	if _, err := mail.ParseAddress(params.Email); err != nil {
+		errors["email"] = errMsgBadEmail
 	}
 
 	return errors
@@ -91,25 +103,26 @@ func (params CreateParams) Validate() map[string]string {
 
 func (params *CreateParams) Sanitize() {
 	params.Name = escape.Alpha(params.Name, true)
-	params.UserName = escape.AlphaNumeric(params.UserName, false)
+	params.Email = escape.Email(params.Email)
 	params.Password = escape.Password(params.Password)
 	params.RepeatPassword = escape.Password(params.RepeatPassword)
 }
 
 func (params CreateParams) View() view.UserForm {
 	return view.UserForm{
+		Admin:          fmt.Sprint(params.Admin),
+		Email:          params.Email,
 		Name:           params.Name,
 		Password:       params.Password,
 		RepeatPassword: params.RepeatPassword,
-		UserName:       params.UserName,
 	}
 }
 
 func (params CreateParams) Domain() domain.CreateUserParams {
 	return domain.CreateUserParams{
-		Admin:    true,
+		Admin:    params.Admin,
+		Email:    params.Email,
 		Name:     params.Name,
 		Password: params.Password,
-		UserName: params.UserName,
 	}
 }

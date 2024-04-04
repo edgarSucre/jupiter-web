@@ -10,6 +10,10 @@ func AlphaNumeric(s string, allowSpaces bool) string {
 	return sanitize.AlphaNumeric(s, allowSpaces)
 }
 
+func Email(s string) string {
+	return sanitize.Email(s, true)
+}
+
 func Password(p string) string {
 	return sanitize.Custom(p, `'|=|;|`)
 }

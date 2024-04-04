@@ -41,11 +41,11 @@ func (repo *SqliteRepository) ListUsers(ctx context.Context) ([]domain.User, err
 	return UsersToDomain(users), nil
 }
 
-func (repo *SqliteRepository) GetUserByUsername(
+func (repo *SqliteRepository) GetUserByEmail(
 	ctx context.Context,
-	userName string,
+	email string,
 ) (domain.User, error) {
-	user, err := repo.q.GetUserByUserName(ctx, userName)
+	user, err := repo.q.GetUserByEmail(ctx, email)
 	if err != nil {
 		user := domain.User{}
 		if errors.Is(err, sql.ErrNoRows) {

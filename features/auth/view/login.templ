@@ -12,7 +12,7 @@ templ LoginReload() {
 	}
 }
 
-templ Login(errors map[string]string, userName string) {
+templ Login(errors map[string]string, email string) {
 	<main id="loginForm" class="flex justify-center items-center h-screen text-boxdark bg-boxdark-2">
 		<div class="w-full md:w-125 rounded-sm border border-stroke bg-white shadow-default">
 			<div class="w-full p-4 sm:p-12.5 xl:p-17.5">
@@ -21,13 +21,13 @@ templ Login(errors map[string]string, userName string) {
 					<span class="mt-2 text-lg text-danger font-medium">{ errors["title"] }</span>
 					<form>
 						@components.TextInput(components.InputParams{
-							Err:         errors["username"],
-							Label:       "Usuario",
-							Name:        "username",
-							PlaceHolder: "Ingrese su usuario",
-							Value:       userName,
+							Err:         errors["email"],
+							Label:       "Email",
+							Name:        "email",
+							PlaceHolder: "Email",
+							Value:       email,
 						}) {
-							@icons.Envelop()
+							@icons.Envelop("")
 						}
 						@components.TextInput(components.InputParams{
 							Err:          errors["password"],
@@ -37,7 +37,7 @@ templ Login(errors map[string]string, userName string) {
 							PlaceHolder:  "Ingrese su contraseña",
 							WrapperClass: "mb-7",
 						}) {
-							@icons.LockClosed()
+							@icons.LockClosed("")
 						}
 						<div class="mb-4">
 							<button

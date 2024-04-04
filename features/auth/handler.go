@@ -23,7 +23,7 @@ type (
 
 	sessionManager interface {
 		New(echo.Context, User) error
-		Expire(echo.Context) echo.Context
+		Expire(echo.Context)
 	}
 
 	renderer interface {
@@ -63,20 +63,20 @@ func (h *Handler) Authenticate(c echo.Context) error {
 	params.Sanitize()
 
 	if errors := params.Validate(); len(errors) > 0 {
-		return h.Render(c, http.StatusUnprocessableEntity, view.Login(errors, params.UserName))
+		return h.Render(c, http.StatusUnprocessableEntity, view.Login(errors, params.Email))
 	}
 
 	user, err := h.useCase.Login(ctx, *params)
 	if err != nil {
 		errors := domain.ViewErr(err, "No se pudo validar las credenciales, intentelo mas tarde")
 
-		return h.Render(c, http.StatusUnprocessableEntity, view.Login(errors, params.UserName))
+		return h.Render(c, http.StatusUnprocessableEntity, view.Login(errors, params.Email))
 	}
 
 	if err := h.sessionManager.New(c, user); err != nil {
 		errors := domain.ViewErr(err, "No se pudo validar las credenciales, intentelo mas tarde")
 
-		return h.Render(c, http.StatusUnprocessableEntity, view.Login(errors, params.UserName))
+		return h.Render(c, http.StatusUnprocessableEntity, view.Login(errors, params.Email))
 	}
 
 	return h.navigator.Home(c)
@@ -93,7 +93,7 @@ func (h *Handler) Login(c echo.Context) error {
 
 // GET /auth/logout
 func (h *Handler) Logout(c echo.Context) error {
-	c = h.sessionManager.Expire(c)
+	h.sessionManager.Expire(c)
 
 	return h.navigator.Login(c)
 }

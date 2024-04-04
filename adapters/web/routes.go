@@ -64,7 +64,7 @@ func (server *Server) setRoutes(e *echo.Echo) {
 	})
 
 	// Verifica la session, excepto en rutas especificas
-	e.Use(sessionMiddleware(server.sessionManager))
+	//e.Use(sessionMiddleware(server.sessionManager))
 }
 
 type (
@@ -94,8 +94,6 @@ func (nav Navigator) IsHxRequest(c echo.Context) bool {
 
 func goToLogin(c echo.Context) error {
 	if isHxRequest(c) {
-		asd := c.Response().Header().Get(echo.HeaderSetCookie)
-		_ = asd
 		location := locationString(Location{Path: "/auth/login", Target: "body"})
 		c.Response().Header().Set(hxLocationHeaderName, location)
 
@@ -107,8 +105,8 @@ func goToLogin(c echo.Context) error {
 
 func goToHome(c echo.Context) error {
 	if isHxRequest(c) {
-		location := locationString(Location{Path: "/", Target: "#mainSection"})
-		c.Response().Header().Set(hxLocationHeaderName, location)
+		// location := locationString(Location{Path: "/", Target: "#mainSection"})
+		c.Response().Header().Set(hxRedirectHeaderName, "/")
 		return c.NoContent(http.StatusOK)
 	}
 

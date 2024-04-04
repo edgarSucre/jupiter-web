@@ -83,7 +83,7 @@ func (sm SessionManager) Hidratate(c echo.Context) error {
 	return nil
 }
 
-func (sm SessionManager) Expire(c echo.Context) echo.Context {
+func (sm SessionManager) Expire(c echo.Context) {
 	cookie := &http.Cookie{
 		Name:    cookieName,
 		Value:   "",
@@ -92,14 +92,6 @@ func (sm SessionManager) Expire(c echo.Context) echo.Context {
 		Path:    "/",
 	}
 
-	hBefore := c.Response().Header().Get(echo.HeaderSetCookie)
-
 	c.Set(sessionKey, nil)
 	c.SetCookie(cookie)
-
-	hAfter := c.Response().Header().Get(echo.HeaderSetCookie)
-	_ = hBefore
-	_ = hAfter
-
-	return c
 }

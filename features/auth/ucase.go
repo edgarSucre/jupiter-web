@@ -10,7 +10,7 @@ import (
 )
 
 type Repository interface {
-	GetUserByUsername(context.Context, string) (domain.User, error)
+	GetUserByEmail(context.Context, string) (domain.User, error)
 }
 
 type UseCase struct {
@@ -26,13 +26,13 @@ func NewUseCase(repo Repository) *UseCase {
 func (uc *UseCase) Login(ctx context.Context, params LoginParams) (User, error) {
 	user := new(User)
 
-	du, err := uc.repo.GetUserByUsername(ctx, params.UserName)
+	du, err := uc.repo.GetUserByEmail(ctx, params.Email)
 	if err != nil {
 		if errors.Is(err, domain.ErrNotFound) {
 			return *user, ErrBadCredentials
 		}
 
-		return *user, fmt.Errorf("%w: repo.GetUserByUsername(%s)", err, params.UserName)
+		return *user, fmt.Errorf("%w: repo.GetUserByEmail(%s)", err, params.Email)
 	}
 
 	if !passwordMatchHash(params.Password, du.Password) {
