@@ -25,7 +25,18 @@ templ List(list []User) {
 				</p>
 			</div>
 			<div class="col-span-2 mx-auto">
-				<p class="text-[#637381] dark:text-bodydark">Acciones pronto..</p>
+				<p class="text-[#637381] dark:text-bodydark flex justify-center gap-1">
+					<span
+						hx-delete={ "/admin/users/" + user.ID }
+						hx-swap="outerHTML"
+						hx-target={ "#" + user.TemplID }
+					>
+						@icons.Trash("h-5 w-5 stroke-current cursor-pointer")
+					</span>
+					<span>
+						@icons.PencilSquare("h-5 w-5 stroke-current cursor-pointer")
+					</span>
+				</p>
 			</div>
 		</div>
 	}

@@ -8,6 +8,7 @@ import (
 	"github.com/edgarSucre/jw/features/components"
 	"github.com/edgarSucre/jw/features/layout"
 	"github.com/labstack/echo/v4"
+	"github.com/labstack/echo/v4/middleware"
 )
 
 const (
@@ -41,6 +42,7 @@ func (server *Server) setRoutes(e *echo.Echo) {
 	users.POST("", userHandler.Create, hxOrBustMiddleware)
 	users.GET("/list", userHandler.List, hxOrBustMiddleware)
 	users.GET("/new", userHandler.New)
+	users.DELETE("/:id", userHandler.Delete)
 
 	// Auth
 	auth := e.Group("auth")
@@ -65,6 +67,7 @@ func (server *Server) setRoutes(e *echo.Echo) {
 
 	// Verifica la session, excepto en rutas especificas
 	//e.Use(sessionMiddleware(server.sessionManager))
+	e.Use(middleware.Logger())
 }
 
 type (

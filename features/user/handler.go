@@ -3,6 +3,7 @@ package user
 import (
 	"context"
 	"net/http"
+	"strconv"
 
 	"github.com/a-h/templ"
 	"github.com/edgarSucre/jw/features/user/view"
@@ -11,6 +12,7 @@ import (
 
 type useCase interface {
 	Create(context.Context, CreateParams) (User, error)
+	Delete(context.Context, int) error
 	List(context.Context) ([]User, error)
 }
 
@@ -88,4 +90,21 @@ func (h *Handler) New(c echo.Context) error {
 	}
 
 	return h.Render(c, http.StatusOK, view.NewReload(user, errors))
+}
+
+// DELETE /admin/users/userID
+func (h *Handler) Delete(c echo.Context) error {
+	idParam := c.Param("id")
+
+	userID, err := strconv.Atoi(idParam)
+	if err != nil {
+		return c.NoContent(http.StatusBadRequest)
+	}
+
+	ctx := c.Request().Context()
+	if err = h.useCase.Delete(ctx, userID); err != nil {
+		return c.NoContent(http.StatusNotFound)
+	}
+
+	return c.NoContent(http.StatusOK)
 }

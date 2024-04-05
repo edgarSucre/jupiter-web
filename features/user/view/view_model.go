@@ -1,6 +1,7 @@
 package view
 
 type User struct {
+	ID      string
 	Admin   bool
 	Email   string
 	Name    string

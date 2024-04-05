@@ -7,6 +7,7 @@ import (
 	"os"
 
 	"github.com/edgarSucre/jw/adapters/db"
+	"github.com/edgarSucre/jw/adapters/japi"
 	"github.com/edgarSucre/jw/adapters/web"
 	"github.com/edgarSucre/jw/features/auth"
 	"github.com/edgarSucre/jw/features/user"
@@ -16,10 +17,10 @@ import (
 )
 
 func main() {
-	// jupyterClient := japi.NewClient(
-	// 	"http://localhost:9091/hub/api",
-	// 	"8e7f67a80f7c23694786d353257c33a1f79d35777fec3c96f9f5d625bbf202a5",
-	// )
+	jupyterClient := japi.NewClient(
+		"http://localhost:9091/hub/api",
+		"8e7f67a80f7c23694786d353257c33a1f79d35777fec3c96f9f5d625bbf202a5",
+	)
 
 	if err := loadEnv(); err != nil {
 		panic(err)
@@ -37,7 +38,7 @@ func main() {
 	renderer := web.ViewRenderer{}
 
 	authUC := auth.NewUseCase(repository)
-	userUC := user.NewUseCase(repository)
+	userUC := user.NewUseCase(repository, jupyterClient)
 
 	authHandler := auth.NewHandler(navigator, renderer, sm, authUC)
 	userHandler := user.NewHandler(renderer, userUC)

@@ -15,3 +15,6 @@ ORDER BY id;
 SELECT *
 FROM users
 WHERE email = ?;
+
+-- name: DeleteUser :exec
+DELETE FROM users WHERE id = ?;

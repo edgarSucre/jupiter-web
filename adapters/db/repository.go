@@ -20,6 +20,23 @@ func NewSqliteRepository(db DBTX) *SqliteRepository {
 	}
 }
 
+func (repo *SqliteRepository) WithTx(fn func(domain.Repository) error) error {
+	// TODO: handle not ok
+	db, _ := repo.q.db.(*sql.DB)
+
+	// handle error
+	tx, _ := db.Begin()
+	defer tx.Rollback()
+
+	if err := fn(NewSqliteRepository(tx)); err != nil {
+		return err
+	}
+
+	tx.Commit()
+
+	return nil
+}
+
 func (repo *SqliteRepository) CreateUser(
 	ctx context.Context,
 	dp domain.CreateUserParams,
@@ -30,6 +47,10 @@ func (repo *SqliteRepository) CreateUser(
 	u, err := repo.q.CreateUser(ctx, *params)
 
 	return u.domain(), err
+}
+
+func (repo *SqliteRepository) DeleteUser(ctx context.Context, userID int) error {
+	return repo.q.DeleteUser(ctx, int64(userID))
 }
 
 func (repo *SqliteRepository) ListUsers(ctx context.Context) ([]domain.User, error) {

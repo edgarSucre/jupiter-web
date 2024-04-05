@@ -28,6 +28,7 @@ func (u User) toView() view.User {
 	return view.User{
 		Admin:   u.Admin,
 		Email:   u.Email,
+		ID:      fmt.Sprint(u.ID),
 		Name:    u.Name,
 		TemplID: fmt.Sprintf("user-%v", u.ID),
 	}
