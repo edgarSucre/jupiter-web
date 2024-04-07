@@ -34,6 +34,13 @@ func (u User) toView() view.User {
 	}
 }
 
+func (u User) viewUpdateForm() view.UserUpdateForm {
+	return view.UserUpdateForm{
+		Admin: fmt.Sprint(u.Admin),
+		Name:  u.Name,
+	}
+}
+
 func usersFromDomain(dUsers []domain.User) []User {
 	users := make([]User, len(dUsers))
 	for i, du := range dUsers {
@@ -55,14 +62,6 @@ func usersToView(users []User) []view.User {
 	return viewUsers
 }
 
-type CreateParams struct {
-	Admin          bool   `form:"admin"`
-	Name           string `form:"name"`
-	Password       string `form:"password"`
-	RepeatPassword string `form:"repeat_password"`
-	Email          string `form:"email"`
-}
-
 const (
 	errMsgBadEmail         = "email es invalido"
 	errMsgNoName           = "nombre es requerido"
@@ -71,6 +70,14 @@ const (
 	errMsgPasswordNoMatch  = "contraseñas no son iguales"
 	errMsgPasswordTooShort = "contraseña debe tener almenos 8 caracteres"
 )
+
+type CreateParams struct {
+	Admin          bool   `form:"admin"`
+	Name           string `form:"name"`
+	Password       string `form:"password"`
+	RepeatPassword string `form:"repeat_password"`
+	Email          string `form:"email"`
+}
 
 func (params CreateParams) Validate() map[string]string {
 	errors := make(map[string]string)
@@ -125,5 +132,44 @@ func (params CreateParams) Domain() domain.CreateUserParams {
 		Email:    params.Email,
 		Name:     params.Name,
 		Password: params.Password,
+	}
+}
+
+type UpdateParams struct {
+	Admin          bool   `form:"admin"`
+	Name           string `form:"name"`
+	Password       string `form:"password"`
+	RepeatPassword string `form:"repeat_password"`
+}
+
+func (params UpdateParams) Validate() map[string]string {
+	errors := make(map[string]string)
+
+	if validate.IsEmpty(params.Name) {
+		errors["name"] = errMsgNoName
+	}
+
+	if validate.IsEmpty(params.Password) {
+		errors["password"] = errMSgNoPassword
+	}
+
+	if len([]rune(params.Password)) <= 7 {
+		errors["password"] = errMsgPasswordTooShort
+	}
+
+	if params.Password != params.RepeatPassword {
+		errors["repeat_password"] = errMsgPasswordNoMatch
+	}
+
+	return errors
+}
+
+func (params UpdateParams) View(id int) view.UserUpdateForm {
+	return view.UserUpdateForm{
+		Admin:          fmt.Sprint(params.Admin),
+		ID:             fmt.Sprint(id),
+		Name:           params.Name,
+		Password:       params.Password,
+		RepeatPassword: params.RepeatPassword,
 	}
 }

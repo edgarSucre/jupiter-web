@@ -31,6 +31,19 @@ func (cl *Client) CreateUser(ctx context.Context, userName string) (domain.Jupyt
 	return user, nil
 }
 
+func (cl *Client) DeleteUser(ctx context.Context, userName string) error {
+	resp, err := cl.Delete(ctx, "users/"+userName)
+	if err != nil {
+		return fmt.Errorf("%w:, deleteUser", err)
+	}
+
+	if resp.StatusCode != http.StatusNoContent {
+		return fmt.Errorf("%w:, Status(%v)", StatusNotDeleted, resp.StatusCode)
+	}
+
+	return nil
+}
+
 func (cl *Client) UserList(ctx context.Context) ([]domain.JupyterUser, error) {
 	resp, err := cl.Get(ctx, "users")
 	if err != nil {

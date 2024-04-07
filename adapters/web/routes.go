@@ -20,7 +20,6 @@ const (
 func (server *Server) setRoutes(e *echo.Echo) {
 	// static assets
 	e.Static("/static", "static")
-	e.File("/favicon.ico", "static/images/favicon.ico")
 
 	// dashboard
 	e.GET("/", func(c echo.Context) error {
@@ -42,7 +41,8 @@ func (server *Server) setRoutes(e *echo.Echo) {
 	users.POST("", userHandler.Create, hxOrBustMiddleware)
 	users.GET("/list", userHandler.List, hxOrBustMiddleware)
 	users.GET("/new", userHandler.New)
-	users.DELETE("/:id", userHandler.Delete)
+	users.DELETE("/:id", userHandler.Delete, hxOrBustMiddleware)
+	users.GET("/:id", userHandler.Edit)
 
 	// Auth
 	auth := e.Group("auth")
@@ -81,6 +81,17 @@ type (
 
 func (nav Navigator) Home(c echo.Context) error {
 	return goToHome(c)
+}
+
+func (nav Navigator) Location(c echo.Context, path, target string) error {
+	if isHxRequest(c) {
+		location := locationString(Location{Path: path, Target: target})
+		c.Response().Header().Set(hxLocationHeaderName, location)
+
+		return c.NoContent(http.StatusOK)
+	}
+
+	return c.Redirect(http.StatusSeeOther, path)
 }
 
 func (nav Navigator) Login(c echo.Context) error {

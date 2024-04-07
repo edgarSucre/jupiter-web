@@ -33,7 +33,11 @@ templ List(list []User) {
 					>
 						@icons.Trash("h-5 w-5 stroke-current cursor-pointer")
 					</span>
-					<span>
+					<span
+						hx-get={ "/admin/users/" + user.ID }
+						hx-target="#mainSection"
+						hx-push-url="true"
+					>
 						@icons.PencilSquare("h-5 w-5 stroke-current cursor-pointer")
 					</span>
 				</p>

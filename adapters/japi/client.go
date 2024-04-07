@@ -33,6 +33,17 @@ func (cl *Client) addAuth(req *http.Request) {
 	req.Header.Set("Authorization", "Bearer "+cl.token)
 }
 
+func (cl *Client) Delete(ctx context.Context, path string) (*http.Response, error) {
+	req, err := http.NewRequestWithContext(ctx, http.MethodDelete, cl.URL(path), nil)
+	if err != nil {
+		return nil, fmt.Errorf("%w: DELETE", err)
+	}
+
+	cl.addAuth(req)
+
+	return cl.c.Do(req)
+}
+
 func (cl *Client) Post(ctx context.Context, path string, body io.Reader) (*http.Response, error) {
 	req, err := http.NewRequestWithContext(ctx, http.MethodPost, cl.URL(path), body)
 	if err != nil {

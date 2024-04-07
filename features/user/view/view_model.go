@@ -15,3 +15,11 @@ type UserForm struct {
 	Password       string
 	RepeatPassword string
 }
+
+type UserUpdateForm struct {
+	ID             string
+	Admin          string
+	Name           string
+	Password       string
+	RepeatPassword string
+}

@@ -13,11 +13,20 @@ import (
 type useCase interface {
 	Create(context.Context, CreateParams) (User, error)
 	Delete(context.Context, int) error
+	Get(context.Context, int) (User, error)
 	List(context.Context) ([]User, error)
 }
 
 type (
+	navigator interface {
+		Home(echo.Context) error
+		Location(echo.Context, string, string) error
+		Login(echo.Context) error
+		IsHxRequest(echo.Context) bool
+	}
+
 	Handler struct {
+		navigator navigator
 		renderer
 		useCase useCase
 	}
@@ -25,12 +34,18 @@ type (
 	renderer interface {
 		Render(echo.Context, int, templ.Component) error
 	}
+
+	smsd interface {
+		navigator
+		renderer
+	}
 )
 
-func NewHandler(renderer renderer, uc useCase) *Handler {
+func NewHandler(nav navigator, renderer renderer, uc useCase) *Handler {
 	return &Handler{
-		renderer: renderer,
-		useCase:  uc,
+		navigator: nav,
+		renderer:  renderer,
+		useCase:   uc,
 	}
 }
 
@@ -58,12 +73,36 @@ func (h *Handler) Create(c echo.Context) error {
 		return h.Render(c, http.StatusUnprocessableEntity, view.New(params.View(), errors))
 	}
 
-	return c.Redirect(http.StatusSeeOther, "/admin/users")
+	return h.navigator.Location(c, "/admin/users", "#mainSection")
+}
+
+// GET admin/users/:id/edit
+func (h *Handler) Edit(c echo.Context) error {
+	ctx := c.Request().Context()
+	idParam := c.Param("id")
+
+	userID, err := strconv.Atoi(idParam)
+	if err != nil {
+		return c.NoContent(http.StatusBadRequest)
+	}
+
+	user, err := h.useCase.Get(ctx, userID)
+	if err != nil {
+		return c.NoContent(http.StatusNotFound)
+	}
+
+	viewData, errors := user.viewUpdateForm(), map[string]string{}
+
+	if h.navigator.IsHxRequest(c) {
+		return h.Render(c, http.StatusOK, view.Edit(viewData, errors))
+	}
+
+	return h.Render(c, http.StatusOK, view.EditReload(viewData, errors))
 }
 
 // GET /admin/users
 func (h *Handler) Index(c echo.Context) error {
-	if c.Request().Header.Get("Hx-Request") == "true" {
+	if h.navigator.IsHxRequest(c) {
 		return h.Render(c, http.StatusOK, view.IndexCmp())
 	}
 
@@ -85,7 +124,7 @@ func (h *Handler) List(c echo.Context) error {
 func (h *Handler) New(c echo.Context) error {
 	user, errors := view.UserForm{}, map[string]string{}
 
-	if c.Request().Header.Get("Hx-Request") == "true" {
+	if h.navigator.IsHxRequest(c) {
 		return h.Render(c, http.StatusOK, view.New(user, errors))
 	}
 

@@ -78,3 +78,20 @@ func (repo *SqliteRepository) GetUserByEmail(
 
 	return user.forAuth(), nil
 }
+
+func (repo *SqliteRepository) GetUserByID(
+	ctx context.Context,
+	id int,
+) (domain.User, error) {
+	user, err := repo.q.GetUserByID(ctx, int64(id))
+	if err != nil {
+		user := domain.User{}
+		if errors.Is(err, sql.ErrNoRows) {
+			return user, domain.ErrNotFound
+		}
+
+		return user, err
+	}
+
+	return user.domain(), nil
+}

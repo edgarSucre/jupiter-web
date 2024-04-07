@@ -41,7 +41,7 @@ func main() {
 	userUC := user.NewUseCase(repository, jupyterClient)
 
 	authHandler := auth.NewHandler(navigator, renderer, sm, authUC)
-	userHandler := user.NewHandler(renderer, userUC)
+	userHandler := user.NewHandler(navigator, renderer, userUC)
 
 	server := web.NewServer(*userHandler, *authHandler)
 	http.ListenAndServe(":8050", server.Handler)

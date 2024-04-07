@@ -1,0 +1,68 @@
+package view
+
+import (
+	"github.com/edgarSucre/jw/features/layout"
+	"github.com/edgarSucre/jw/features/components"
+)
+
+templ EditReload(user UserUpdateForm, errors map[string]string) {
+	@layout.Index() {
+		@Edit(user, errors)
+	}
+}
+
+templ Edit(user UserUpdateForm, errors map[string]string) {
+	<div id="editUser" class="max-w-full w-2/3 mx-auto">
+		@components.Title("Actualizar Usuario") {
+			@components.BreadLink("Usuarios /", "/admin/users")
+			@components.BreadCurrent("Actualizar")
+		}
+		<div class="bg-white dark:bg-boxdark p-6 shadow-lg rounded-[10px] w-full">
+			<form class="w-2/3 mx-auto">
+				<span class="mt-2 text-lg text-danger font-medium">{ errors["title"] }</span>
+				@components.TextInput(components.InputParams{
+					Err:         errors["name"],
+					Label:       "Nombre",
+					Name:        "name",
+					PlaceHolder: "Nombre completo...",
+					Required:    true,
+					Value:       user.Name,
+				})
+				@components.TextInput(components.InputParams{
+					Err:         errors["password"],
+					Label:       "Contraseña",
+					Name:        "password",
+					Pass:        true,
+					PlaceHolder: "Inserte Contraseña...",
+					Required:    true,
+					Value:       user.Password,
+				})
+				@components.TextInput(components.InputParams{
+					Err:         errors["repeat_password"],
+					Label:       "Confirmar Contraseña",
+					Name:        "repeat_password",
+					Pass:        true,
+					PlaceHolder: "Repetir Contraseña...",
+					Required:    true,
+					Value:       user.RepeatPassword,
+				})
+				@components.Toggle(components.InputParams{
+					Err:   errors["admin"],
+					Label: "Usuario es Admin?",
+					Name:  "admin",
+					Value: user.Admin,
+				})
+				<div class="b-5">
+					<button
+						hx-put={ "/admin/users/" + user.ID }
+						hx-target="#editUser"
+						hx-swap="outerHTML"
+						class={ components.ButtonBase, "p-4 text-lg w-full" }
+					>
+						Actualizar Usuario
+					</button>
+				</div>
+			</form>
+		</div>
+	</div>
+}
