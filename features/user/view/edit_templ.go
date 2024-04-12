@@ -132,7 +132,6 @@ func Edit(user UserUpdateForm, errors map[string]string) templ.Component {
 			Name:        "password",
 			Pass:        true,
 			PlaceHolder: "Inserte Contraseña...",
-			Required:    true,
 			Value:       user.Password,
 		}).Render(ctx, templ_7745c5c3_Buffer)
 		if templ_7745c5c3_Err != nil {
@@ -144,7 +143,6 @@ func Edit(user UserUpdateForm, errors map[string]string) templ.Component {
 			Name:        "repeat_password",
 			Pass:        true,
 			PlaceHolder: "Repetir Contraseña...",
-			Required:    true,
 			Value:       user.RepeatPassword,
 		}).Render(ctx, templ_7745c5c3_Buffer)
 		if templ_7745c5c3_Err != nil {

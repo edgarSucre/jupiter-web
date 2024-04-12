@@ -95,3 +95,13 @@ func (repo *SqliteRepository) GetUserByID(
 
 	return user.domain(), nil
 }
+
+func (repo *SqliteRepository) UpdateUser(
+	ctx context.Context,
+	dp domain.UpdateUserParams,
+) error {
+	params := new(UpdateUserParams)
+	params.copyDomain(dp)
+
+	return repo.q.UpdateUser(ctx, *params)
+}

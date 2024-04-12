@@ -1,19 +1,27 @@
 package escape
 
-import "github.com/mrz1836/go-sanitize"
+import (
+	"strings"
+
+	"github.com/mrz1836/go-sanitize"
+)
 
 func Alpha(s string, allowSpaces bool) string {
-	return sanitize.Alpha(s, allowSpaces)
+	ss := sanitize.Alpha(s, allowSpaces)
+	return strings.TrimSpace(ss)
 }
 
 func AlphaNumeric(s string, allowSpaces bool) string {
-	return sanitize.AlphaNumeric(s, allowSpaces)
+	ss := sanitize.AlphaNumeric(s, allowSpaces)
+	return strings.TrimSpace(ss)
 }
 
 func Email(s string) string {
-	return sanitize.Email(s, true)
+	ss := sanitize.Email(s, true)
+	return strings.TrimSpace(ss)
 }
 
 func Password(p string) string {
-	return sanitize.Custom(p, `'|=|;|`)
+	ss := sanitize.Custom(p, `'|=|;|`)
+	return strings.TrimSpace(ss)
 }

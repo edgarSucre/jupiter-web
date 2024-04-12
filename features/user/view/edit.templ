@@ -34,7 +34,6 @@ templ Edit(user UserUpdateForm, errors map[string]string) {
 					Name:        "password",
 					Pass:        true,
 					PlaceHolder: "Inserte Contraseña...",
-					Required:    true,
 					Value:       user.Password,
 				})
 				@components.TextInput(components.InputParams{
@@ -43,7 +42,6 @@ templ Edit(user UserUpdateForm, errors map[string]string) {
 					Name:        "repeat_password",
 					Pass:        true,
 					PlaceHolder: "Repetir Contraseña...",
-					Required:    true,
 					Value:       user.RepeatPassword,
 				})
 				@components.Toggle(components.InputParams{

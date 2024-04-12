@@ -15,6 +15,7 @@ type useCase interface {
 	Delete(context.Context, int) error
 	Get(context.Context, int) (User, error)
 	List(context.Context) ([]User, error)
+	Update(context.Context, UpdateParams) error
 }
 
 type (
@@ -49,6 +50,17 @@ func NewHandler(nav navigator, renderer renderer, uc useCase) *Handler {
 	}
 }
 
+// GET /admin/users/new
+func (h *Handler) New(c echo.Context) error {
+	user, errors := view.UserForm{}, map[string]string{}
+
+	if h.navigator.IsHxRequest(c) {
+		return h.Render(c, http.StatusOK, view.New(user, errors))
+	}
+
+	return h.Render(c, http.StatusOK, view.NewReload(user, errors))
+}
+
 // POST /admin/users
 func (h *Handler) Create(c echo.Context) error {
 	ctx := c.Request().Context()
@@ -76,6 +88,43 @@ func (h *Handler) Create(c echo.Context) error {
 	return h.navigator.Location(c, "/admin/users", "#mainSection")
 }
 
+// GET /admin/users
+func (h *Handler) Index(c echo.Context) error {
+	if h.navigator.IsHxRequest(c) {
+		return h.Render(c, http.StatusOK, view.IndexCmp())
+	}
+
+	return h.Render(c, http.StatusOK, view.IndexFull())
+}
+
+// GET /admin/user/list HxRequest only
+func (h *Handler) List(c echo.Context) error {
+	mUsers, err := h.useCase.List(c.Request().Context())
+	if err != nil {
+		// return view.ListErr()
+		//TODO: handle error
+	}
+
+	return h.Render(c, http.StatusOK, view.List(usersToView(mUsers)))
+}
+
+// DELETE /admin/users/userID
+func (h *Handler) Delete(c echo.Context) error {
+	idParam := c.Param("id")
+
+	userID, err := strconv.Atoi(idParam)
+	if err != nil {
+		return c.NoContent(http.StatusBadRequest)
+	}
+
+	ctx := c.Request().Context()
+	if err = h.useCase.Delete(ctx, userID); err != nil {
+		return c.NoContent(http.StatusNotFound)
+	}
+
+	return c.NoContent(http.StatusOK)
+}
+
 // GET admin/users/:id/edit
 func (h *Handler) Edit(c echo.Context) error {
 	ctx := c.Request().Context()
@@ -100,39 +149,9 @@ func (h *Handler) Edit(c echo.Context) error {
 	return h.Render(c, http.StatusOK, view.EditReload(viewData, errors))
 }
 
-// GET /admin/users
-func (h *Handler) Index(c echo.Context) error {
-	if h.navigator.IsHxRequest(c) {
-		return h.Render(c, http.StatusOK, view.IndexCmp())
-	}
-
-	return h.Render(c, http.StatusOK, view.IndexFull())
-}
-
-// GET /admin/user/list HxRequest only
-func (h *Handler) List(c echo.Context) error {
-	mUsers, err := h.useCase.List(c.Request().Context())
-	if err != nil {
-		// return view.ListErr()
-		//TODO: handle error
-	}
-
-	return h.Render(c, http.StatusOK, view.List(usersToView(mUsers)))
-}
-
-// GET /admin/users/new
-func (h *Handler) New(c echo.Context) error {
-	user, errors := view.UserForm{}, map[string]string{}
-
-	if h.navigator.IsHxRequest(c) {
-		return h.Render(c, http.StatusOK, view.New(user, errors))
-	}
-
-	return h.Render(c, http.StatusOK, view.NewReload(user, errors))
-}
-
-// DELETE /admin/users/userID
-func (h *Handler) Delete(c echo.Context) error {
+// PUT admin/users/:id
+func (h *Handler) Update(c echo.Context) error {
+	ctx := c.Request().Context()
 	idParam := c.Param("id")
 
 	userID, err := strconv.Atoi(idParam)
@@ -140,10 +159,23 @@ func (h *Handler) Delete(c echo.Context) error {
 		return c.NoContent(http.StatusBadRequest)
 	}
 
-	ctx := c.Request().Context()
-	if err = h.useCase.Delete(ctx, userID); err != nil {
-		return c.NoContent(http.StatusNotFound)
+	params := new(UpdateParams)
+	errMsg := map[string]string{"title": "no se pudo actualize el usuario, intentelo mas tarde"}
+
+	if err := c.Bind(params); err != nil {
+		return h.Render(c, http.StatusUnprocessableEntity, view.Edit(params.View(), errMsg))
 	}
 
-	return c.NoContent(http.StatusOK)
+	params.ID = userID
+	params.Sanitize()
+
+	if errors := params.Validate(); len(errors) > 0 {
+		return h.Render(c, http.StatusUnprocessableEntity, view.Edit(params.View(), errors))
+	}
+
+	if err := h.useCase.Update(ctx, *params); err != nil {
+		return h.Render(c, http.StatusUnprocessableEntity, view.Edit(params.View(), errMsg))
+	}
+
+	return h.navigator.Location(c, "/admin/users", "#mainSection")
 }

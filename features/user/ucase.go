@@ -11,6 +11,7 @@ type Repository interface {
 	DeleteUser(context.Context, int) error
 	GetUserByID(context.Context, int) (domain.User, error)
 	ListUsers(context.Context) ([]domain.User, error)
+	UpdateUser(context.Context, domain.UpdateUserParams) error
 	WithTx(fn func(domain.Repository) error) error
 }
 

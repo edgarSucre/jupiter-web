@@ -7,6 +7,7 @@ package db
 
 import (
 	"context"
+	"database/sql"
 )
 
 const createUser = `-- name: CreateUser :one
@@ -123,4 +124,30 @@ func (q *Queries) ListUsers(ctx context.Context) ([]User, error) {
 		return nil, err
 	}
 	return items, nil
+}
+
+const updateUser = `-- name: UpdateUser :exec
+UPDATE users
+SET
+    admin = ?1,
+    name = ?2,
+    password = coalesce(?3, password)
+where id = ?4
+`
+
+type UpdateUserParams struct {
+	Admin    int64
+	Name     string
+	Password sql.NullString
+	ID       int64
+}
+
+func (q *Queries) UpdateUser(ctx context.Context, arg UpdateUserParams) error {
+	_, err := q.db.ExecContext(ctx, updateUser,
+		arg.Admin,
+		arg.Name,
+		arg.Password,
+		arg.ID,
+	)
+	return err
 }

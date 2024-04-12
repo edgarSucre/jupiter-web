@@ -23,3 +23,11 @@ WHERE id = ?;
 
 -- name: DeleteUser :exec
 DELETE FROM users WHERE id = ?;
+
+-- name: UpdateUser :exec
+UPDATE users
+SET
+    admin = sqlc.arg('admin'),
+    name = sqlc.arg('name'),
+    password = coalesce(sqlc.narg('password'), password)
+where id = sqlc.arg('id');

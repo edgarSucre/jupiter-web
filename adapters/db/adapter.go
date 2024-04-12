@@ -1,6 +1,10 @@
 package db
 
-import "github.com/edgarSucre/jw/domain"
+import (
+	"database/sql"
+
+	"github.com/edgarSucre/jw/domain"
+)
 
 func (u User) domain() domain.User {
 	return domain.User{
@@ -38,4 +42,20 @@ func (up *CreateUserParams) copyDomain(params domain.CreateUserParams) {
 	up.Name = params.Name
 	up.Password = params.Password
 	up.Email = params.Email
+}
+
+func (up *UpdateUserParams) copyDomain(params domain.UpdateUserParams) {
+	if params.Admin {
+		up.Admin = 1
+	}
+
+	up.ID = int64(params.ID)
+	up.Name = params.Name
+
+	if params.Password != nil {
+		up.Password = sql.NullString{
+			String: *params.Password,
+			Valid:  true,
+		}
+	}
 }

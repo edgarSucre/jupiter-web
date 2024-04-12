@@ -37,6 +37,7 @@ func (u User) toView() view.User {
 func (u User) viewUpdateForm() view.UserUpdateForm {
 	return view.UserUpdateForm{
 		Admin: fmt.Sprint(u.Admin),
+		ID:    fmt.Sprint(u.ID),
 		Name:  u.Name,
 	}
 }
@@ -136,10 +137,19 @@ func (params CreateParams) Domain() domain.CreateUserParams {
 }
 
 type UpdateParams struct {
-	Admin          bool   `form:"admin"`
+	Admin          bool `form:"admin"`
+	ID             int
 	Name           string `form:"name"`
 	Password       string `form:"password"`
 	RepeatPassword string `form:"repeat_password"`
+}
+
+func (params *UpdateParams) Sanitize() {
+	params.Name = escape.Alpha(params.Name, true)
+
+	if params.Password != "" {
+		params.Password = escape.Password(params.Password)
+	}
 }
 
 func (params UpdateParams) Validate() map[string]string {
@@ -149,11 +159,7 @@ func (params UpdateParams) Validate() map[string]string {
 		errors["name"] = errMsgNoName
 	}
 
-	if validate.IsEmpty(params.Password) {
-		errors["password"] = errMSgNoPassword
-	}
-
-	if len([]rune(params.Password)) <= 7 {
+	if !validate.IsEmpty(params.Password) && len([]rune(params.Password)) <= 7 {
 		errors["password"] = errMsgPasswordTooShort
 	}
 
@@ -164,10 +170,24 @@ func (params UpdateParams) Validate() map[string]string {
 	return errors
 }
 
-func (params UpdateParams) View(id int) view.UserUpdateForm {
+func (params UpdateParams) Domain() domain.UpdateUserParams {
+	up := domain.UpdateUserParams{
+		Admin: params.Admin,
+		ID:    params.ID,
+		Name:  params.Name,
+	}
+
+	if params.Password != "" {
+		up.Password = &params.Password
+	}
+
+	return up
+}
+
+func (params UpdateParams) View() view.UserUpdateForm {
 	return view.UserUpdateForm{
 		Admin:          fmt.Sprint(params.Admin),
-		ID:             fmt.Sprint(id),
+		ID:             fmt.Sprint(params.ID),
 		Name:           params.Name,
 		Password:       params.Password,
 		RepeatPassword: params.RepeatPassword,

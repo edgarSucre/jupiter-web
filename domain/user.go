@@ -40,4 +40,11 @@ type (
 		Name     string
 		Password string
 	}
+
+	UpdateUserParams struct {
+		Admin    bool
+		ID       int
+		Name     string
+		Password *string
+	}
 )

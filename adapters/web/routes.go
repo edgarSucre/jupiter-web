@@ -43,6 +43,7 @@ func (server *Server) setRoutes(e *echo.Echo) {
 	users.GET("/new", userHandler.New)
 	users.DELETE("/:id", userHandler.Delete, hxOrBustMiddleware)
 	users.GET("/:id", userHandler.Edit)
+	users.PUT("/:id", userHandler.Update)
 
 	// Auth
 	auth := e.Group("auth")
