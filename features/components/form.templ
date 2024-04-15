@@ -149,10 +149,10 @@ templ toggle(name string, value string) {
 					id={ name + "on" }
 					class={ templ.KV("!block", value == "true"), "hidden text-white dark:text-bodydark" }
 				>
-					@icons.Check("")
+					@icons.Check(icons.Icon{})
 				</span>
 				<span id={ name + "off" } class={ templ.KV("hidden", value == "true") }>
-					@icons.XMark("h-4 w-4 stroke-current")
+					@icons.XMark(icons.Icon{})
 				</span>
 			</div>
 		</div>

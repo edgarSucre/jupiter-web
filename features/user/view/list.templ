@@ -4,6 +4,27 @@ import (
 	"github.com/edgarSucre/jw/features/icons"
 )
 
+script showDeleteModal(modalID, userID string) {
+	modal = document.getElementById(modalID);
+	hiddenFlexToggler(modal);
+
+	//remove previous event listeners
+	oldSubmit = document.getElementById("submit-" + modalID);
+	oldSubmit.replaceWith(oldSubmit.cloneNode(true));
+
+	submitBtn = document.getElementById("submit-" + modalID);
+	submitBtn.addEventListener("click", (e) => {
+		
+		let triggerId = "#userDeleteTrigger-" + userID;
+		let event = "userDeleteConfirmed-" + userID;
+		
+		htmx.trigger(triggerId, event);
+		hiddenFlexToggler(modal);
+
+		e.stopPropagation();
+	});
+}
+
 templ List(list []User) {
 	for _, user := range list {
 		<div id={ user.TemplID } class="grid grid-cols-12 border-t border-[#EEEEEE] px-5 py-4 dark:border-strokedark lg:px-7.5 2xl:px-11">
@@ -18,27 +39,34 @@ templ List(list []User) {
 			<div class="col-span-2">
 				<p class="text-[#637381] dark:text-bodydark">
 					if user.Admin {
-						@icons.Check("")
+						@icons.Check(icons.Icon{})
 					} else {
-						@icons.XMark("")
+						@icons.XMark(icons.Icon{})
 					}
 				</p>
 			</div>
 			<div class="col-span-2 mx-auto">
 				<p class="text-[#637381] dark:text-bodydark flex justify-center gap-1">
 					<span
+						id={ "userDeleteTrigger-" + user.ID }
 						hx-delete={ "/admin/users/" + user.ID }
 						hx-swap="outerHTML"
 						hx-target={ "#" + user.TemplID }
+						hx-trigger={ "userDeleteConfirmed-" + user.ID }
+						hx-on:click={ showDeleteModal("userDelete", user.ID) }
 					>
-						@icons.Trash("h-5 w-5 stroke-current cursor-pointer")
+						@icons.Trash(icons.Icon{
+							Class: "h-5 w-5 stroke-current cursor-pointer",
+						})
 					</span>
 					<span
 						hx-get={ "/admin/users/" + user.ID }
 						hx-target="#mainSection"
 						hx-push-url="true"
 					>
-						@icons.PencilSquare("h-5 w-5 stroke-current cursor-pointer")
+						@icons.PencilSquare(icons.Icon{
+							Class: "h-5 w-5 stroke-current cursor-pointer",
+						})
 					</span>
 				</p>
 			</div>

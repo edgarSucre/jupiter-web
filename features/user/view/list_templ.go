@@ -14,6 +14,33 @@ import (
 	"github.com/edgarSucre/jw/features/icons"
 )
 
+func showDeleteModal(modalID, userID string) templ.ComponentScript {
+	return templ.ComponentScript{
+		Name: `__templ_showDeleteModal_6ef3`,
+		Function: `function __templ_showDeleteModal_6ef3(modalID, userID){modal = document.getElementById(modalID);
+	hiddenFlexToggler(modal);
+
+	//remove previous event listeners
+	oldSubmit = document.getElementById("submit-" + modalID);
+	oldSubmit.replaceWith(oldSubmit.cloneNode(true));
+
+	submitBtn = document.getElementById("submit-" + modalID);
+	submitBtn.addEventListener("click", (e) => {
+		
+		let triggerId = "#userDeleteTrigger-" + userID;
+		let event = "userDeleteConfirmed-" + userID;
+		
+		htmx.trigger(triggerId, event);
+		hiddenFlexToggler(modal);
+
+		e.stopPropagation();
+	});
+}`,
+		Call:       templ.SafeScript(`__templ_showDeleteModal_6ef3`, modalID, userID),
+		CallInline: templ.SafeScriptInline(`__templ_showDeleteModal_6ef3`, modalID, userID),
+	}
+}
+
 func List(list []User) templ.Component {
 	return templ.ComponentFunc(func(ctx context.Context, templ_7745c5c3_W io.Writer) (templ_7745c5c3_Err error) {
 		templ_7745c5c3_Buffer, templ_7745c5c3_IsBuffer := templ_7745c5c3_W.(*bytes.Buffer)
@@ -43,7 +70,7 @@ func List(list []User) templ.Component {
 			var templ_7745c5c3_Var2 string
 			templ_7745c5c3_Var2, templ_7745c5c3_Err = templ.JoinStringErrs(user.Name)
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `features/user/view/list.templ`, Line: 10, Col: 60}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `features/user/view/list.templ`, Line: 31, Col: 60}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var2))
 			if templ_7745c5c3_Err != nil {
@@ -56,7 +83,7 @@ func List(list []User) templ.Component {
 			var templ_7745c5c3_Var3 string
 			templ_7745c5c3_Var3, templ_7745c5c3_Err = templ.JoinStringErrs(user.Email)
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `features/user/view/list.templ`, Line: 14, Col: 17}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `features/user/view/list.templ`, Line: 35, Col: 17}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var3))
 			if templ_7745c5c3_Err != nil {
@@ -67,17 +94,33 @@ func List(list []User) templ.Component {
 				return templ_7745c5c3_Err
 			}
 			if user.Admin {
-				templ_7745c5c3_Err = icons.Check("").Render(ctx, templ_7745c5c3_Buffer)
+				templ_7745c5c3_Err = icons.Check(icons.Icon{}).Render(ctx, templ_7745c5c3_Buffer)
 				if templ_7745c5c3_Err != nil {
 					return templ_7745c5c3_Err
 				}
 			} else {
-				templ_7745c5c3_Err = icons.XMark("").Render(ctx, templ_7745c5c3_Buffer)
+				templ_7745c5c3_Err = icons.XMark(icons.Icon{}).Render(ctx, templ_7745c5c3_Buffer)
 				if templ_7745c5c3_Err != nil {
 					return templ_7745c5c3_Err
 				}
 			}
-			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</p></div><div class=\"col-span-2 mx-auto\"><p class=\"text-[#637381] dark:text-bodydark flex justify-center gap-1\"><span hx-delete=\"")
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</p></div><div class=\"col-span-2 mx-auto\"><p class=\"text-[#637381] dark:text-bodydark flex justify-center gap-1\">")
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+			templ_7745c5c3_Err = templ.RenderScriptItems(ctx, templ_7745c5c3_Buffer, showDeleteModal("userDelete", user.ID))
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<span id=\"")
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString("userDeleteTrigger-" + user.ID))
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("\" hx-delete=\"")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
@@ -93,11 +136,30 @@ func List(list []User) templ.Component {
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("\" hx-trigger=\"")
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString("userDeleteConfirmed-" + user.ID))
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("\" hx-on:click=\"")
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+			var templ_7745c5c3_Var4 templ.ComponentScript = showDeleteModal("userDelete", user.ID)
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var4.Call)
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("\">")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			templ_7745c5c3_Err = icons.Trash("h-5 w-5 stroke-current cursor-pointer").Render(ctx, templ_7745c5c3_Buffer)
+			templ_7745c5c3_Err = icons.Trash(icons.Icon{
+				Class: "h-5 w-5 stroke-current cursor-pointer",
+			}).Render(ctx, templ_7745c5c3_Buffer)
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
@@ -113,7 +175,9 @@ func List(list []User) templ.Component {
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			templ_7745c5c3_Err = icons.PencilSquare("h-5 w-5 stroke-current cursor-pointer").Render(ctx, templ_7745c5c3_Buffer)
+			templ_7745c5c3_Err = icons.PencilSquare(icons.Icon{
+				Class: "h-5 w-5 stroke-current cursor-pointer",
+			}).Render(ctx, templ_7745c5c3_Buffer)
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}

@@ -14,7 +14,7 @@ func (uc *UseCase) Delete(ctx context.Context, userID int) error {
 	}
 
 	err = uc.repo.WithTx(func(r domain.Repository) error {
-		if err := uc.repo.DeleteUser(ctx, userID); err != nil {
+		if err := r.DeleteUser(ctx, userID); err != nil {
 			return fmt.Errorf("%w, repo.DeleteUser", err)
 		}
 

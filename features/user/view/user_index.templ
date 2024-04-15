@@ -44,6 +44,12 @@ templ IndexCmp() {
 			</div>
 		</div>
 	</div>
+	@components.Confirm(components.ConfirmOpts{
+		ID:       "userDelete",
+		SubTitle: "Al eliminar el usuario se perdern todos sus datos.",
+		Title:    "Eliminar Usuario",
+		Theme:    components.ConfirmDanger,
+	})
 }
 
 templ IndexFull() {

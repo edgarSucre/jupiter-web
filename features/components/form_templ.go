@@ -553,7 +553,7 @@ func toggle(name string, value string) templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = icons.Check("").Render(ctx, templ_7745c5c3_Buffer)
+		templ_7745c5c3_Err = icons.Check(icons.Icon{}).Render(ctx, templ_7745c5c3_Buffer)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -586,7 +586,7 @@ func toggle(name string, value string) templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = icons.XMark("h-4 w-4 stroke-current").Render(ctx, templ_7745c5c3_Buffer)
+		templ_7745c5c3_Err = icons.XMark(icons.Icon{}).Render(ctx, templ_7745c5c3_Buffer)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}

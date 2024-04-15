@@ -8,3 +8,15 @@ document.addEventListener('htmx:beforeSwap', function (evt) {
     evt.detail.isError = false;
   }
 });
+
+const hiddenFlexToggler = (element) => {
+  element.classList.toggle('hidden');
+  element.classList.toggle('flex');
+};
+
+const globalModalToggle = (event, element) => {
+  let modal = document.getElementById(element.dataset.modalId);
+  hiddenFlexToggler(modal);
+
+  event.stopPropagation();
+};
